@@ -45,6 +45,7 @@
                 "-f",
                 "-bibtex",
                 "-outdir=%OUTDIR%",
+                "--shell-escape",
             ],
             "env": {}
         },
@@ -55,6 +56,7 @@
                 "-synctex=1",
                 "-interaction=nonstopmode",
                 "-file-line-error",
+                "--shell-escape",
                 "-recorcder",
                 "NCM-TFG.tex"
             ],
@@ -68,5 +70,17 @@
             ],
             "env": {}
         },
+    ],
+    "cSpell.language": "en,es-ES",
+    "cSpell.words": [
+        "acíclico",
+        "autocertificante",
+        "direccionan",
+        "encriptación",
+        "escalabilidad",
+        "IPFS",
+        "IPNS",
+        "Merkle",
+        "Vint"
     ],
 }

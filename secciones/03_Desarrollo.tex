@@ -1,10 +1,39 @@
-\chapter{Desarrollo de IPFShare}
+\chapter{Desarrollo de IPFShare}\label{chap:3desarrollo}
 % Capítulo dedicado a describir el desarrollo del Trabajo realizado. De acuerdo con el tutor, este capítulo puede tener distintas estructuras, e incluso pueden existir varios capítulos.
 % Todos los capítulos deben empezar en una página nueva.
 % Los apartados dentro de los capítulos se numeran de forma jerárquica, pero siempre deben estar alineados al margen izquierdo. Ejemplo:
 
 \section{Casos de uso}
 
+\begin{minted}{typescript}
+import OrbitDB from "orbit-db"
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import AccessController from "orbit-db-access-controllers/interface"
+import DocumentStore from "orbit-db-docstore"
+import { IdentityProvider } from "orbit-db-identity-provider"
+
+export interface RegistryEntry {
+  peerId: string
+  orbitdbIdentity: string // DID
+  username: string // alias
+}
+
+export abstract class Registry<S, DocType> {
+    abstract accessController: AccessController
+    abstract store: S
+    abstract open(): Promise<void> 
+    abstract create(): Promise<void>
+    abstract replicate(): Promise<void>
+    abstract close(): Promise<void>
+    abstract addUser(user: DocType): Promise<void>
+    abstract getUser(entryId: string): Promise<DocType | undefined>
+    abstract updateUser(entryId: string, updates: Partial<DocType>): Promise<void>
+    abstract searchUsers(queryFn: (entry: DocType) => boolean): Promise<DocType[]>
+    abstract deleteUser(entryId: string): Promise<void>
+}
+
+\end{minted}
 
 \section{Objetivos}
 

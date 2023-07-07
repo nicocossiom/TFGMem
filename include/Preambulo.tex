@@ -24,9 +24,46 @@
 \usepackage{float}
 \usepackage{tocloft}
 \usepackage{tikz}
+\usepackage{nameref}
 \usepackage{url}
+\usepackage{enumitem} % para listas 
 \usepackage[stable]{footmisc}
-\usepackage{parskip} % para separar párrafos con espacio.
+\usepackage{parskip} % para separar párrafos con espacio
+\usepackage[outputdir=build,cache=false]{minted}
+\usemintedstyle{vs}
+\setminted[typescript]{%
+   breaklines,
+   mathescape,
+   linenos,
+   numbersep=5pt,
+   frame=single,
+   numbersep=5pt,
+   xleftmargin=0pt
+}
+\setminted[bash]{%
+   breaklines,
+   mathescape,
+   linenos,
+   numbersep=5pt,
+   frame=single,
+   numbersep=5pt,
+   xleftmargin=0pt
+}
+\setminted[json]{%
+   breaklines,
+   mathescape,
+   numbersep=5pt,
+   frame=single,
+   numbersep=5pt,
+   xleftmargin=0pt,
+   breakanywhere
+}
+
+\usepackage{titlesec}
+\titlespacing{\section}{0pt}{\parskip}{10pt}
+\titlespacing{\subsection}{0pt}{\parskip}{10pt}
+\setlength{\intextsep}{5pt}
+
 %%-----------------------------------------------
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -35,9 +72,6 @@
 \fancyhead[RE]{\rightmark}
 \setlength{\headheight}{1.5\headheight}
 \cfoot{\thepage}
-
-
-
 
 \addto\captionsspanish{ \renewcommand{\contentsname}
    {Tabla de contenidos} }
@@ -109,7 +143,7 @@
    numberfirstline = false,
    breaklines=true,
 }
-\lstnewenvironment{listing}[1][]
+\lstnewenvironment{newlisting}[1][]
 {\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
 
 \lstdefinestyle{consola}

@@ -4,33 +4,46 @@
 %%--------------
 % \newpage
 %%--------------
-IPFS, también conocido como Protocolo de Sistema de Archivos Interplanetario, 
+IPFS, también conocido como Protocolo de Sistema de Archivos Interplanetario,
 es un protocolo de red y un sistema de archivos diseñado para hacer
-la web más rápida, segura y abierta. Este sistema permite a los usuarios no 
+la web más rápida, segura y abierta. Este sistema permite a los usuarios no
 solo recibir, sino también alojar contenido en una red P2P completamente descentralizada.
 
-IPFS tiene varias ventajas clave. A diferencia de protocolos como HTTP, en IPFS los archivos se identifican 
-por su contenido en lugar de por su ubicación. Esta característica permite a cualquier nodo de la red 
-convertirse en proveedor de contenido dentro de ella, lo que se traduce en una mayor eficiencia, seguridad, 
+IPFS tiene varias ventajas clave. A diferencia de protocolos como HTTP, en IPFS los archivos se identifican
+por su contenido en lugar de por su ubicación. Esta característica permite a cualquier nodo de la red
+convertirse en proveedor de contenido dentro de ella, lo que se traduce en una mayor eficiencia, seguridad,
 escalabilidad y resiliencia para el almacenamiento y distribución de datos.
 IPFS facilita la creación de aplicaciones descentralizadas (dApps) al proporcionar herramientas como
 un sistema de almacenamiento de archivos distribuido y un sistema de nombres descentralizado (IPNS) para la web. Al mismo tiempo, promueve el desarrollo de aplicaciones resistentes a la censura y una web verdaderamente abierta y descentralizada.
 
 Este trabajo de fin de grado se divide en dos partes:
 
-La primera consiste en el estudio del ecosistema de IPFS. Se abarca desde su arquitectura, algoritmo de intercambio de bloques, 
-identificación basada en contenido, hasta su estructura de datos. Se analizan ejemplos de casos de uso en la 
+La primera consiste en el estudio del ecosistema de IPFS. Se abarca desde su arquitectura, algoritmo de intercambio de bloques,
+identificación basada en contenido, hasta su estructura de datos. Se analizan ejemplos de casos de uso en la
 Web3, como la distribución descentralizada de contenido, el almacenamiento de datos en la cadena de bloques y
 la publicación de datos permanentes.
 
-La segunda parte del trabajo consiste en la creación de un sistema de intercambio de archivos basado en IPFS. 
-Este sistema cuenta con características como la encriptación de archivos usando JWE (Encriptación Web JSON), 
-verificación de autoría y firma de archivos usando JWS (Firma Web JSON). También se incorporan características 
-como la gestión automática de claves y un sistema de registro de usuarios basado en bases de datos
-descentralizadas, en particular en OrbitDB.
+La segunda parte del trabajo consiste en la creación de un sistema de intercambio de archivos basado en IPFS.
+Se presenta un posible diseño de una arquitectura centralizada típica que se usaría para una aplicación de intercambio seguro de archivos.
+Se profundiza en posibles puntos únicos de falla, preocupaciones de privacidad y problemas de escalabilidad que surgen al depender de una sola autoridad o servidor.
+\\Con estos puntos establecidos, se introduce el sistema ideado. Empleando la naturaleza distribuida de IPFS, esta propuesta tiene como objetivo abordar los problemas mencionados, minimizando los puntos únicos de falla y mejorando la propiedad y la privacidad de los datos.
 
-La aplicación desarrollada funciona en sistemas operativos Windows, MacOS y Linux. 
-Mediante una interfaz de comandos de consola los usuarios pueden compartir archivos de manera segura y privada sin la necesidad de depender de servidores centralizados. 
+Algunas características fundamentales de este sistema son:
+\begin{itemize}[itemsep=1pt,nolistsep]
+    \item Archivado y compresión de archivos y directorios utilizando tar y gzip.
+    \item Encriptación segura de archivos utilizando aes-256-cbc.
+    \item Encriptación de secretos facilitada por JSON Web Encryption (JWE).
+    \item Verificación de autoría mediante el uso de Identificadores Descentralizados \\(DIDs), en forma de firma de contenido utilizando JSON Web Signatures (JWS).
+    \item Uso de bases de datos descentralizadas impulsadas por OrbitDB, que permiten:
+          \begin{itemize}
+              \item Silos de usuarios, registro automático y controladores de acceso distribuidos.
+              \item Notificaciones push mediante una cola de mensajes descentralizada.
+              \item Bases de datos locales con persistencia para uso interno de la aplicación.
+          \end{itemize}
+\end{itemize}
+
+La aplicación desarrollada funciona en sistemas operativos Windows, MacOS y Linux.
+Mediante una interfaz de comandos de consola los usuarios pueden compartir archivos de manera segura y privada sin la necesidad de depender de servidores centralizados.
 
 
 \chapter*{Abstract}
@@ -51,6 +64,24 @@ This undergraduate thesis is divided into two parts:
 
 The first part consists of the study of the IPFS ecosystem. From its architecture, block exchange algorithm, content-based addressing, to its data structure. Examples of use cases in Web3, such as decentralized content distribution, blockchain-based data storage, and permanent data publishing, are also analyzed.
 
-The second part of the thesis involves the creation of a file-sharing system based on IPFS. This system features file encryption using JSON Web Encryption (JWE), authorship verification enabled by file signing using JSON Web Signatures (JWS). It also incorporates features such as automatic key management and a user registration system based on decentralized databases, particularly OrbitDB.
+The second part of the thesis involves the creation of a secure and decentralized file-sharing system based on IPFS.
+The process starts by outlining the design and limitations of a typical centralized architecture for an application of the proposed type. Emphasizing on potential single points of failure, privacy concerns and scalability issues that arise from relying on a single authority or server.
+\\With these points established, the devised system is then introduced. Employing the distributed nature of IPFS, this proposal aims to address the aforementioned issues, minimizing single points of failure, and enhancing data privacy and ownership.
+
+Fundamental features of this system encompass:
+
+\begin{itemize}[itemsep=1pt,nolistsep]
+    \item File or directory archiving and compression using tar and gzip.
+    \item Secure file encryption using aes-256-cbc.
+    \item Secrets encryption facilitated by JSON Web Encryption (JWE).
+    \item Authorship verification through the usage of Decentralized Identifiers (DIDs), in the form of content signing using JSON Web Signatures (JWS).
+    \item Usage of decentralized databases powered by OrbitDB which enable:
+          \begin{itemize}
+              \item User silos, automatic registration, and distributed access controllers.
+              \item Push notifications via a decentralized message queue.
+              \item Local databases with persistence for internal application use.
+          \end{itemize}
+\end{itemize}
+
 
 The developed application supports Windows, MacOS, and Linux operating systems. Through a command-line interface, users can securely and privately share files without relying on centralized servers.
