@@ -157,8 +157,8 @@ Benet presenta el concepto de IPFS y su proposición de crear un sistema de arch
 distribuido y descentralizado que permita a los usuarios almacenar y compartir archivos de forma segura y confiable.
 
 Benet es también el fundador de Protocol Labs\cite{ProtocolLabs}, una empresa dedicada a la creación de protocolos de código abierto para la Web3.
-IPFS es un proyecto de código abierto y pese a que Protocol Labs está detrás de este, no es el único contribuidor a su desarrollo. Esto es otro
-de los puntos fuertes de IPFS, la comunidad que lo rodea. En la sección \ref{sect:ecosistema}: '\nameref{sect:ecosistema}' se profundiza en este aspecto.
+IPFS es un proyecto de código abierto y, pese a que Protocol Labs está detrás de este, no es el único contribuidor a su desarrollo. Esto es otro
+de los puntos fuertes de IPFS, la comunidad que lo rodea.   En la sección \ref{sect:ecosistema}: '\nameref{sect:ecosistema}' se profundiza en este aspecto.
 
 En IPFS, cada archivo se identifica de manera única a través de su contenido mediante un hash criptográfico. Esto significa que
 cualquier nodo en la red puede actuar como un proveedor de contenido al almacenar y compartir archivos, permitiendo una mayor
@@ -166,7 +166,8 @@ disponibilidad y un internet verdaderamente descentralizado. En lugar de depende
 recurso, los usuarios pueden obtener el contenido de cualquier nodo que tenga ese recurso en particular.
 
 Estos identificadores de contenido se conocen como CID (Content Identifier). Dado que un CID es un puntero que señala a un contenido particular, se puede usar un CID en vez de URL en un enlace. De esta manera
-se puede acceder a un recurso de manera fiable, independientemente de su ubicación física, mientras haya algún otro nodo de la red que el contenido que buscamos.
+se puede acceder a un recurso de manera fiable, independientemente de su ubicación física, mientras haya algún otro nodo de la red en posesión del
+contenido que buscamos.
 
 \subsection{Fundamentos}\label{sect:fundamentos}
 % Describe the key concepts and terminologies involved in IPFS, such as Content-addressed, Peer-to-peer (P2P) network, and Merkle DAG.
@@ -236,21 +237,21 @@ En la capa de red encontramos los protocolos de transporte de red mediante los c
 Debido a esta gran variedad de protocolos de transporte, libp2p proporciona una forma de identificar el transporte que se esté usando mediante
 direcciones \textit{multiaddr}.
 Los multiaddresses son una forma de representar las direcciones de red como encapsulaciones de protocolos arbitrarios. Estos multiaddresses admiten direccionar
-para cualquier protocolo de red. Siguen una sintaxis simple, lo que los hace fáciles de analizar y construir.
+para cualquier protocolo de red. Siguen una sintáxis  simple, lo que los hace fáciles de analizar y construir.
 
 En IPFS, se utilizan los multiaddresses para identificar y localizar los nodos en la red. Cada nodo al configurarse por primera vez
 genera un par de claves pública y privada. La clave pública se utiliza para crear un identificador único del nodo en la red llamado peerID, que es el hash de su esta clave pública. La clave privada se utiliza para firmar mensajes y autenticar la identidad del nodo. Además, los nodos tienen una o más direcciones de red que combinan protocolos y valores para indicar cómo conectarse a ellos. Por ejemplo, una dirección de red podría ser /ip4/1.2.3.4/tcp/4001/ipfs/QmFoo, lo que significa que el nodo QmFoo está escuchando conexiones TCP en el puerto 4001 utilizando la dirección IP 1.2.3.4.
 
 Los multiaddresses se pueden encapsular entre sí para crear capas de transporte más complejas. Por ejemplo, se puede utilizar /dns4/example.com/tcp/1234/tls/ws/tls para indicar una conexión segura con WebSockets sobre TLS utilizando el dominio example.com y el puerto 1234.
 
-La amplia variedad de protocolos de transporte disponibles garantiza la adaptabilidad de IPFS, ya que los nodos pueden utilizar múltiples protocolos de transporte simultáneamente y cambiar entre ellos según las condiciones de la red. Esto significa que las opciones de transporte de un nodo dependen del entorno en el que se ejecute. Por ejemplo, en un navegador web, solo se pueden utilizar WebSockets y WebRTC, mientras que en otros entornos se pueden utilizar todos los protocolos mencionados anteriormente, siempre que sean compatibles.
+La amplia variedad de protocolos de transporte disponibles garantiza la adaptabilidad de IPFS, ya que los nodos pueden utilizar múltiples protocolos de transporte simultáneamente y cambiar entre ellos según las condiciones de la red. Esto significa que las opciones de transporte de un nodo dependen del entorno en el que se ejecute. Por ejemplo, en un navegador web sólo se pueden utilizar WebSockets y WebRTC, mientras que en otros entornos se pueden utilizar todos los protocolos mencionados anteriormente, siempre que sean compatibles a nivel de sistema operativo y hardware.
 
 \subsubsection{Enrutamiento y descubrimiento de nodos}
 \textbf{Descubrimiento de nodos:}
-\\El descubrimiento es el proceso de encontrar y anunciar servicios a otros nodos disponibles en una red P2P. Se puede realizar utilizando diversos protocolos,
-por ejemplo la difusión de mensajes a todos los nodos de la red o utilizar una serie nodo de arranque para proporcionar una lista de nodos conocidos.
+\\Es el proceso de encontrar y anunciar servicios a otros nodos en una red P2P. Se puede realizar utilizando diversos protocolos,
+como por ejemplo, la difusión de mensajes a todos los nodos de la red o utilizar una serie nodo de arranque para proporcionar una lista de nodos conocidos.
 
-Esto último se conoce como nodos de arranque (bootstrapping). Son nodos predefinidos (por cada nodo) y de confianza que ayudan a los nuevos nodos a unirse a la red y a descubrir otros nodos, facilitando el proceso de construcción y mantenimiento de la red distribuida.
+Esto último se conoce como nodos de arranque (bootstrapping). Es una lista de nodos predefinidos  y de confianza que ayudan a los nuevos nodos a unirse a la red y a descubrir otros nodos, facilitando el proceso de construcción y mantenimiento de la red distribuida. La lista de bootsrappers la define cada nodo. La figura \ref{fig:ipfsbootsrapper} muestra los bootstrappers por defecto en una instalación de IPFS.
 
 \begin{figure}[H]
       \centering
@@ -266,7 +267,7 @@ Esto último se conoce como nodos de arranque (bootstrapping). Son nodos predefi
 ],
       \end{minted}
       \caption{Bootstrappers por defecto en una instalación de IPFS}
-      \label{}
+      \label{fig:ipfsbootsrapper}
 \end{figure}
 
 \textbf{Enrutamiento}:
@@ -292,22 +293,21 @@ Los protocolos principales\footnote{Existen más protocolos de enrutamiento y de
             diferentes ventajas.
 \end{itemize}
 
-Como se ha comentado, libp2p ofrece varias formas de enrutamiento y descubrimiento de nodos, IPFS utiliza todas ellas en sus distintas
-configuraciones. Depende del contexto la combinación de estos que se use.
+Tal como se indicó previamente, libp2p dispone de varias estrategias para el enrutamiento y la detección de nodos. IPFS las utiliza todas en sus diferentes configuraciones. La elección de la combinación de estas estrategias se realiza en función del contexto particular de un nodo respecto de
+otros nodos y la red.
 
 \subsubsection{Mecanismo de intercambio de contenido}
 
-\textbf{Bitswap:} Es un protocolo de intercambio de contenido que se ejecuta sobre una red P2P. Bitswap permite a los nodos intercambiar bloques de datos entre
-sí. Los nodos pueden solicitar bloques de datos a otros nodos y compartir los bloques que disponen. Bitswap utiliza un mecanismo de intercambio de deuda para
-garantizar que los nodos intercambien bloques de datos de manera justa y equitativa. Los nodos pueden intercambiar bloques de datos de manera eficiente, ya que
-Bitswap mantiene un registro de los bloques que cada nodo tiene y los bloques que necesita.
+\textbf{Bitswap:} Es un protocolo de intercambio de contenido que se ejecuta sobre una red P2P. Bitswap permite a los nodos intercambiar bloques de datos entre los nodos que conforman la red. Estos pueden solicitar bloques de datos a otros nodos y compartir los bloques que disponen. Bitswap utiliza un mecanismo de intercambio de deuda para
+garantizar que los nodos intercambien bloques de datos de manera justa y equitativa.
+Todo esto es posible gracias a que Bitswap mantiene un registro de los bloques que cada nodo tiene y los bloques que necesita.
 
-La transferencia de datos (bloques) en IPFS está inspirada en BitTorrent, pero no es 100\% BitTorrent. Dos características de BitTorrent que utiliza IPFS:
+La transferencia de datos (bloques) en IPFS está inspirada en BitTorrent, pero no es igual uno a uno comparado con este. Dos características de BitTorrent que utiliza IPFS:
 \begin{itemize}[itemsep=1pt,nolistsep]
       \item Estrategia de tit-for-tat (el que no comparte no recibe).
       \item Obtén primero las piezas raras (mejora el rendimiento).
 \end{itemize}
-Una diferencia notable es que en BitTorrent cada archivo tiene un enjambre (también conocido como \textit{swarm}) separado de nodos (formando una red P2P entre ellos). En cambio IPFS es una única red de nodos formando un gran swarm. La variedad de BitTorrent en IPFS se llama Bitswap.
+Una diferencia notable es que en BitTorrent cada archivo tiene un enjambre (también conocido como \textit{swarm}) separado de nodos (formando una red P2P entre ellos). En cambio, IPFS es una única red de nodos formando un gran swarm. La variedad de BitTorrent en IPFS es el ya mecionado Bitswap.
 
 Bitswap es el algoritmo de intercambio de bloques, pero para realizar este intercambio primero se debe saber qué nodos pueden proveer los bloque que se buscan.
 Esto es posible gracias a la DHT. En IPFS la DHT se utiliza principalmente con dos funciones:
@@ -344,20 +344,18 @@ necesarios, lo que significa que no se utilizan ni se acceden directamente.
 
 La recolección de basura en IPFS es el proceso mediante el cual se eliminan los bloques que ya no son necesarios en un nodo. Sin embargo, IPFS utiliza un sistema de almacenamiento basado en referencias, lo que significa que un bloque puede ser referenciado por múltiples objetos y mantenerse en el sistema aunque no esté directamente en uso.
 
-Para evitar que los bloques necesarios sean eliminados por accidente, IPFS introduce el concepto de \textit{pinning}. Un pin es una
+Para evitar que los bloques necesarios sean eliminados por accidente sin el deseo del usuario poseedor del nodo, IPFS introduce el concepto de \textit{pinning}. Un pin es una
 instrucción que le indica al nodo que debe mantener un bloque o conjunto de bloques en su almacenamiento local, incluso si no están
 siendo utilizados directamente por el nodo.
 
-Los pinsets son conjuntos de CIDs (Content Identifiers) que se desean mantener en el nodo. Estos pinsets permiten a los usuarios
-especificar qué bloques desean mantener de manera persistente en su nodo, evitando así que sean eliminados durante el proceso de
+Los pinsets son conjuntos de CIDs que se desean mantener en el nodo. Estos pinsets permiten a los usuarios
+especificar qué bloques desean mantener de manera persistente, evitando así que sean eliminados durante el proceso de
 recolección de basura.
 
-En resumen, los pinsets son conjuntos de CIDs que representan bloques que un nodo desea mantener en su almacenamiento local, y utilizan el concepto de "pins" para asegurarse de que estos bloques no sean eliminados accidentalmente durante la recolección de basura.
+En resumen, los pinsets son conjuntos de CIDs que representan bloques que un nodo desea mantener en su almacenamiento local, y utilizan el concepto de 'pins' para asegurarse de que estos bloques no sean eliminados accidentalmente durante la recolección de basura.
 
 \subsection{Modelo de datos}
-% Explain the IPFS data model, which involves content addressing and hash-based naming.
-% Discuss the benefits of the IPFS data model, such as data integrity, data verifiability, and content-based addressing.
-
+\subsubsection{DAG de Merkle}
 El modelo de datos en IPFS está basado en árboles de Merkle. Es una estructura de datos en la que cada nodo es una representación hash de un conjunto de datos.
 Los nodos hoja son representaciones (generalmente a través de una función de hash) de bloques de datos, mientras que cada nodo interno es la representación
 (nuevamente, generalmente a través de una función de hash) de sus nodos hijos. Esto crea un sistema en el que cualquier cambio en los datos originales cambiará
@@ -373,33 +371,39 @@ Esto significa que los nodos están conectados de tal manera que siempre hay una
       \label{merkledag}
 \end{figure}
 
-IPLD (InterPlanetary Linked Data)\cite{IPLDDocs} es un formato de datos basado en árboles de Merkle que permite enlazar datos entre diferentes sistemas distribuidos, como IPFS,
-Bitcoin o Ethereum. Una estructura de datos inmutable es aquella que no puede ser modificada una vez creada, lo que ofrece ventajas como la seguridad, la
-consistencia y la ausencia de efectos secundarios. IPLD utiliza estructuras de datos inmutables para representar los bloques de datos que se almacenan y se
-enlazan entre sí mediante CIDs.
+\subsubsection{IPLD}
+IPLD (InterPlanetary Linked Data)\cite{IPLDDocs} es un estructura basada en un DAG de Merkle que permite enlazar datos entre diferentes sistemas
+distribuidos, como IPFS, Bitcoin o Ethereum. Una estructura de datos inmutable es aquella que no puede ser modificada una vez creada, lo que ofrece
+ventajas como la seguridad, la consistencia y la ausencia de efectos secundarios. IPLD utiliza estructuras de datos inmutables para representar los
+bloques de datos que se almacenan y se enlazan entre sí mediante CIDs.
 
 IPLD es una capa de abstracción que permite a los desarrolladores trabajar con datos en diferentes plataformas y protocolos como si estuvieran trabajando con un solo sistema cohesivo. Permite la interoperabilidad a gran escala entre diferentes sistemas de almacenamiento de datos, lo que facilita la creación de aplicaciones y servicios más robustos y resistentes en entornos distribuidos.
 
 El DAG también garantiza a IPFS con característica de control de versiones como Git. Aunque este es un apartado en el que se profundiza poco en IPFS.
-En el whitepaper, Benet se refiere más bien al hecho de que ambos al usar Merkle DAGs IPFS, posee características de control de versiones. Los nodos en un Merkle DAG son inmutables. Cualquier cambio en un nodo alteraría su identificador y, por lo tanto, afectaría a todos los ascendentes en el DAG, creando esencialmente un DAG diferente.
+En el whitepaper, Benet se refiere más bien al hecho de que al igual que Git, IPFS usa Merkle DAGs, y por lo tanto posee características de
+control de versiones. Los nodos en un Merkle DAG son inmutables. Cualquier cambio en un nodo alteraría su identificador y, por lo tanto, afectaría a
+todos los ascendentes en el DAG, creando esencialmente un DAG diferente.
 
-En lo que respecta a este trabajo este hecho permite la propia existencia de OrbitDB, el cual es una pieza clave en el desarrollo de este proyecto. OrbitDB implementa bases de datos distrubuidas en IPFS, se basa en este concepto al ser los datos inmutables y permitir la reconstrucción de la base de datos mediante el intercambio de objetos y la actualización de referencias remotas.
+En lo que respecta a este trabajo, este hecho permite la propia existencia de OrbitDB, el cual es una pieza clave en el desarrollo de este proyecto. OrbitDB implementa bases de datos distrubuidas en IPFS, se basa en este concepto al ser los datos inmutables y permitir la reconstrucción de la base de datos mediante el intercambio de objetos y la actualización de referencias remotas.
 TODO poner referencia a orbitdb
 
-Los códecs de IPLD son funciones que transforman el Modelo de Datos de IPLD en bytes serializados para que puedas enviar y compartir datos, y transforman los
-bytes serializados de nuevo en el Modelo de Datos de IPLD para que puedas trabajar con él. Algunos de estos códecs incluyen:
+\subsubsection{Códecs de IPLD}
+
+Los códecs de IPLD son funciones que transforman el modelo de datos de IPLD en bytes serializados para que puedas enviar y compartir datos, y transforman los
+bytes serializados de nuevo en el modelo de datos de IPLD para que puedas trabajar con él. Algunos de estos códecs incluyen:
 
 \begin{itemize}[itemsep=1pt,nolistsep]
-      \item \textbf{DAG-CBOR:} Un formato binario que soporta el Modelo de Datos de IPLD completo. Ofrece un excelente rendimiento y es adecuado para cualquier tipo de trabajo.
-      \item \textbf{DAG-JSON:} Basado en JSON (Javascript Object Notation). Un formato legible por humanos que soporta casi el Modelo de Datos de IPLD completo. Es muy conveniente para la interoperabilidad, el desarrollo y la depuración.
-      \item \textbf{DAG-PB:} Un formato binario para estructuras específicas limitadas de datos. Es ampliamente utilizado en IPFS y sobretodo en unixfsv1.
+      \item \textbf{DAG-CBOR:} es un formato binario que soporta el modelo de datos de IPLD al completo. Ofrece un excelente rendimiento y es adecuado para cualquier tipo de trabajo.
+      \item \textbf{DAG-JSON:} está basado en JSON (Javascript Object Notation). Es un formato más legible, lo que lo hace muy conveniente para la interoperabilidad, el desarrollo y a la hora de depurar código que haga uso de IPLD.
+      \item \textbf{DAG-PB:} es otro formato binario usado principalmente para serializar datos en fornmato de unixfsv1 (ir a \ref{subsect:unixfs}: '\nameref{subsect:unixfs}' para más información).
       \item \textbf{DAG-JOSE:} El codec dag-jose es un formato para firmar y cifrar objetos JSON.
 \end{itemize}
 
-En este proyecto se ha hecho especial incapié en el uso de DAG-JOSE como estructura de datos en el DAG de Merkle. Esto permite la firma y cifrado de los datos
-en objetos JWS (JSON Web Signatures) y JWE (JSON Web Encryption) representados en nodos del dag de IPLD.
+En este proyecto se ha hecho especial incapié en el uso de DAG-JOSE como códec de los datos en el DAG de Merkle. Esto permite la firma y cifrado de
+en objetos JWS (JSON Web Signatures) y JWE (JSON Web Encryption) representados en nodos del DAG de IPLD.
 TODO poner referencia a la parte de JWE y JWS
 
+\subsubsection{Unixfs}\label{subsect:unixfs}
 Sobre todo este modelo de datos se establecen otras estructura o abstracciones como Unixfs.
 
 Cuando se agrega un archivo a IPFS, puede que sea demasiado grande para caber en un solo bloque, por lo que se divide en disintos bloques que luego son
@@ -491,6 +495,7 @@ ChildBlocks: 2
 Type: fil
 \end{minted}
 
+\subsubsection{MFS}
 
 Sobre Unixfs existe otra capa más que es la que realmente permite una interacción con IPFS como si de un
 sistema de ficheros tradicional se tratara. Este componente es denominado \textit{Mutable File System} (MFS) o Sistema de Archivos Mutable.
@@ -533,17 +538,17 @@ Este identificador es una clave criptográfica que se genera cuando se inicializ
 
 Cuando se desea publicar contenido bajo IPNS, se crea un registro que vincula el identificador IPNS con el CID del contenido.
 Este registro se firma con la clave privada del nodo, garantizando que solo el propietario del identificador IPNS puede cambiar la vinculación.
-El registro se propaga luego a través de la red IPFS usando un protocolo de tablas hash distribuidas. Cuando otros nodos quieren acceder al contenido, pueden buscar el registro usando el identificador IPNS y obtener el CID correspondiente.
+El registro, contenido en la DHT se propaga luego a través de la red IPFS mediante Kademlia. Cuando otros nodos quieren acceder al contenido, pueden buscar el registro usando el identificador IPNS y obtener el CID correspondiente.
 
 IPNS es de interés particular para este proyecto debido a que permite crear enlaces persistentes a contenido que puede cambiar con el tiempo.
-Tal y como sucede con una URL a un enlace a un contenido compartido en plataformas de almacenamiento en la nube como Google Drive o Dropbox.
+Tal y como sucede con una URL que enlaza a un contenido compartido en plataformas de almacenamiento en la nube como Google Drive o Dropbox.
 
-Este es el último apartado en esta explicación de los fundamentos de IPFS. Por supuesto, no se ha cubierto todo lo que IPFS ofrece, pero si los conceptos
-fundamentales necesarios para entender el sistema que se propone en el proyecto.
+Este es el último apartado en esta explicación de los fundamentos de IPFS. Por supuesto, no se ha cubierto todo lo que IPFS ofrece, pero sí los
+conceptos fundamentales necesarios para entender el sistema que se propone en el proyecto.
 
 \section{Ecosistema en torno a IPFS}\label{sect:ecosistema}
 \subsection{Introducción}
-El ecosistema IPFS es un conjunto diverso y creciente de proyectos, herramientas, comunidades e integraciones que trabajan colectivamente para desarrollar, adoptar y evolucionar IPFS. Este ecosistema es fundamental para el éxito y la adopción generalizada de IPFS, ya que proporciona una variedad de recursos y oportunidades para interactuar y construir sobre IPFS.
+El ecosistema IPFS es un conjunto diverso y creciente de proyectos, herramientas, comunidades e integraciones que trabajan colectivamente para desarrollar, adoptar y evolucionar IPFS. Este ecosistema es fundamental para el éxito y la adopción generalizada de IPFS, ya que proporciona una variedad de recursos y oportunidades para interactuar y construir sobre el mismo.
 
 \subsection{Proyectos basados en IPFS}
 Existen numerosos proyectos y productos que se basan en IPFS para ofrecer soluciones innovadoras y disruptivas en diferentes áreas de aplicación. Algunas de estas áreas son:

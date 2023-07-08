@@ -3,9 +3,9 @@
 En este capítulo se lleva a cabo un breve análisis de algunas implementaciones y plataformas que usan IPFS o tecnologías
 similares, así como de otras alternativas a IPFS, que cumplen parcial o completamente con los objetivos del proyecto.
 
-Como se ha visto en el apartado anterior en la comunidad IPFS existe una gran cantidad de herramientas y proyectos
+Como se ha visto en el apartado anterior existen una gran cantidad de herramientas y proyectos
 que usan IPFS como base para sus sistemas. Pese a esto en el contexto de archivos compartidos, solo existen
-algunos proyectos interesantes que merece la pena analizar.
+algunos proyectos interesantes que merece la pena analizar:
 
 \section{Peergos}
 
@@ -30,8 +30,7 @@ que tienen una serie de nodos en la red que mantienen pinneados los bloques de d
     \label{fig:peergos}
 \end{figure}
 
-Otro aspecto de gran interés y que se ha tomado como referencia e inspiración para este trabajo de fin de grado es el sistema de
-registro de usuarios. Las claves públicas y los nombres de usuario se almacenan en una estructura de datos global de solo adición,
+Otro aspecto de gran interés es el sistema registro de usuarios. Las claves públicas y los nombres de usuario se almacenan en una estructura de datos global de solo adición,
 con los  nombres asignados por orden de llegada. Esto requiere consenso para garantizar la singularidad de los nombres de usuario.
 Aquí es también donde se almacena el ID del nodo IPFS del servidor (o servidores) responsables de sincronizar las escrituras del
 usuario. El problema de la implementación realizada por Peergos es que se necesita de uno o varios servidores centralizado
@@ -46,16 +45,16 @@ Se puede considerar esta plataforma como referencia del potencial de IPFS, y aun
 \section{Filecoin}
 
 Filecoin\cite{filecoinDecentralizedStorageNetwork} es una plataforma de almacenamiento en la nube descentralizada basada en
-blockchain. La plataforma utiliza su criptomoneda nativa, también llamada Filecoin (FIL), para facilitar las transacciones dentro
+blockchain. La plataforma utiliza su propia criptomoneda,llamada Filecoin (FIL), para facilitar e incentivar las transacciones dentro
 de la red.
 
-Filecoin no está dirigido a consumidores ya que realmente es un mercado para proveedores de almacenamiento en la nube. Puede llegar
+Filecoin no está dirigido a consumidores (usuarios de a pie) ya que realmente es un mercado para proveedores de almacenamiento en la nube. Puede llegar
 a ser de interés para el futuro de este proyecto ya que se podría integrar el sistema con Filecoin para ofrecer un servicio parecido
 a un proveedor de almacenamiento en la nube, pero con distintos proveedores que compiten entre sí para ofrecer el mejor servicio.
 
 \section{Sailplane}
 
-Sailplane se describe como un proyecto para \textit{'Compartir archivos de forma colaborativa y punto a punto en el navegador'}.
+Sailplane se describe como una plataforma para \textit{'Compartir archivos de forma colaborativa y punto a punto en el navegador'}.
 
 Sailplane, al igual que este proyecto, usa OrbitDB como el componente central de sus sistema\footnote{Este proyecto fue descubierto
     hacia el final del desarrollo de este trabajo de fin de grado por lo que este hecho es más bien una casualidad.}.
@@ -92,14 +91,20 @@ Existe también una web que hace uso de este nodo y ofrece:
     \label{fig:sailplanewebsync}
 \end{figure}
 
-Tras el análisis de Sailplane resulta interesante la implementación de un sistema de ficheros montado sobre OrbitDB.
-Esto es algo que se explorará más adelante en la el capítulo \ref{chap:7trabajosfuturos}:'\nameref{chap:7trabajosfuturos}'.
+Lo que más destaca de Sailplane es  la implementación de un sistema de ficheros montado sobre OrbitDB.
+Esto es algo que se explorará más adelante en la el capítulo \ref{chap:7trabajosfuturos}: '\nameref{chap:7trabajosfuturos}'.
 El uso de OrbitDB para un sistema de registro automático y autocontenido es algo que también se ha implementado en la propuesta, aunque como se ha
 comentado previamente, el descubrimiento de este proyecto ocurrió ya habiendo desarrollado esta característica.
 
 \section{Fileverse}
+Fileverse es una plataforma de almacenamiento que se integra con IPFS y que permite guardar, compartir y acceder a archivos desde cualquier dispositivo.
 
 
+Actualmente ofrece dos productos, ambos en formato de aplicación web:
+\begin{itemize}
+    \item Fileverse Solo: Una aplicación web para subir y compartir archivos sin autenticación. El usuario sube un archivo y recibe un enlace que puede compartir con otros usuarios. En la figura \ref{fig:fileverse} se puede observar un ejemplo de uso.
+    \item Fileverse Portals: Una aplicación web que integra autenticación basada en blockchain. Es un espacio de trabajo para la gestión de archivos sobre blochain (e IPFS) y la creación de contenido. Está en fase de pruebas y no se puede acceder.
+\end{itemize}
 \begin{figure}[H]
     \centering
     \small
@@ -107,3 +112,19 @@ comentado previamente, el descubrimiento de este proyecto ocurrió ya habiendo d
     \caption{Aplicación web de Fileverse para subir archivos}
     \label{fig:fileverse}
 \end{figure}
+
+El servicio que ofrece Fileverse Solo es muy simple: el usuario sube un archivo y recibe un enlace que puede pasar a otras personas para descargar dicho archivo.
+Esta caso de uso es muy similar al que se propone en este proyecto, aunque con algunas diferencias. El uso de una
+aplicación web resulta más sencillo que una línea de comandos, pero no integra cuentas de usuario ni formas de acceder o gestionar comparticiones pasadas.
+
+
+\section{Resumen}
+
+Como se puede observar en este capítulo existen varias implementaciones de sistemas de almacenamiento y compartición de
+archivos basadas en IPFS. Como opinión personal, ninguna presenta un servicio comparable al de los grandes
+proveedores centralizados de almacenamiento en la nube. Tanto en términos de facilidad de uso, como de funcionalidades y
+fiabilidad.
+
+Esto se debe a que detrás de estos servicios hay una gran infraestructura e inversión que no es comparable a estos proyectos
+que tienen un carácter más experimental, investigativo y proviene de equipos de desarrollo mucho más limitados. Aún así, estos proyectos son un buen ejemplo de lo que se puede lograr con IPFS y
+han sido de gran ayuda a la hora de realizar este proyecto, en particular Sailplane y Peergos.
