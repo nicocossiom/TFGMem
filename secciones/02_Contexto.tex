@@ -131,11 +131,11 @@ Aunque es un concepto simple y con el que cualquier persona en la actualidad est
 en la que se usa internet en la actualidad. Los usuarios de internet interactúan con el contenido en internet mediante estos enlaces.
 \\La WWW se basó en tres tecnologías clave: HTML, un lenguaje de marcado para crear páginas web; HTTP, un protocolo para solicitar y transferir recursos a través de la web; y URL, un sistema de direcciones para localizar recursos en la web\cite{leinerBriefHistoryInternet1999}. Y es este último el que genera una gran problemática que resuelve IPFS.
 
-URL significa Uniform Resource Locator, que se traduce al español como Localizador Uniforme de Recursos. Es un sistema de direcciones utilizado en la web para localizar de manera única recursos como páginas web, imágenes, videos y otros archivos. Una URL consta de varios componentes, incluyendo el esquema (como "http://" o "https://"), el nombre de dominio (como "www.ejemplo.com"), la ruta del recurso y otros parámetros opcionales.
+URL significa Uniform Resource Locator, que se traduce al español como Localizador Uniforme de Recursos. Es un sistema de direcciones utilizado en la web para localizar de manera única recursos como páginas web, imágenes, videos y otros archivos. Una URL consta de varios componentes, incluyendo el esquema (como 'http://' o 'https://'), el nombre de dominio (como 'www.ejemplo.com'), la ruta del recurso y otros parámetros opcionales.
 
 \setlength{\parskip}{10pt}
 Sin embargo, a medida que la web ha crecido en tamaño y complejidad, el enfoque de direccionamiento basado en la ubicación física
-de los servidores puede presentar limitaciones. Por ejemplo, si un recurso se encuentra en una URL específica y esa URL cambia o
+de los servidores puede presentar limitaciones. Por ejemplo, si un recurs' se encuentra en una URL específica y esa URL cambia o
 el servidor deja de estar disponible, el acceso al recurso se verá comprometido.
 
 IPFS aborda este problema mediante el uso de un sistema de direccionamiento basado en el contenido, en lugar de la ubicación. En
@@ -332,6 +332,27 @@ proporcionar, y bloques que desea obtener.
       \label{bitswap}
 \end{figure}
 
+
+Por último cabe destacar un concepto muy importante dentro de IPFS en torno al guardado de bloques:
+\textbf{la recolección de basura.}
+
+Cada nodo tiene una capacidad
+de almacenamiento, siendo esta el límite de bloques que puede almacenar. A medida que un nodo va obteniendo y compartiendo más
+contenido a través de IPFS, los bloques que recibe se van ubicando su almacenamiento local. La cantidad de bloques puede aumentar
+rápidamente y ocupar espacio innecesario. Algunos de estos bloques pueden estar referenciados por objetos obsoletos o que ya no son
+necesarios, lo que significa que no se utilizan ni se acceden directamente.
+
+La recolección de basura en IPFS es el proceso mediante el cual se eliminan los bloques que ya no son necesarios en un nodo. Sin embargo, IPFS utiliza un sistema de almacenamiento basado en referencias, lo que significa que un bloque puede ser referenciado por múltiples objetos y mantenerse en el sistema aunque no esté directamente en uso.
+
+Para evitar que los bloques necesarios sean eliminados por accidente, IPFS introduce el concepto de \textit{pinning}. Un pin es una
+instrucción que le indica al nodo que debe mantener un bloque o conjunto de bloques en su almacenamiento local, incluso si no están
+siendo utilizados directamente por el nodo.
+
+Los pinsets son conjuntos de CIDs (Content Identifiers) que se desean mantener en el nodo. Estos pinsets permiten a los usuarios
+especificar qué bloques desean mantener de manera persistente en su nodo, evitando así que sean eliminados durante el proceso de
+recolección de basura.
+
+En resumen, los pinsets son conjuntos de CIDs que representan bloques que un nodo desea mantener en su almacenamiento local, y utilizan el concepto de "pins" para asegurarse de que estos bloques no sean eliminados accidentalmente durante la recolección de basura.
 
 \subsection{Modelo de datos}
 % Explain the IPFS data model, which involves content addressing and hash-based naming.

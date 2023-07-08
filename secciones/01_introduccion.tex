@@ -11,7 +11,7 @@ con el avance hacia la \textit{Web3}\cite{Web32023}, una visión de un internet 
 En esta sección, exploraremos cómo un sistema de intercambio de archivos encaja en este nuevo panorama y por qué es relevante para el progreso de la Web3.
 
 Los servicios de almacenamiento y compartición de archivos actuales, como Google Drive, Dropbox, Microsoft OneDrive y otros
-proveedores de almacenamiento en la nube son servicios centralizados y, aunque populares y ampliamente utilizados debido
+proveedores de almacenamiento en la nube son servicios centralizados. Pese a ser  populares y ampliamente utilizados debido
 a su facilidad de uso, accesibilidad y confiabilidad, presentan ciertos problemas y limitaciones. Los usuarios dependen de una
 sola entidad para almacenar y gestionar sus archivos, lo que puede generar problemas si la empresa experimenta fallos técnicos,
 cambia sus políticas de uso, o se convierte en el objetivo de un ataque cibernéticos maliciosos.
@@ -31,10 +31,10 @@ funcionamiento del sistema. Esto facilita encontrar rápidamente los nodos o rec
 vulnerable en términos de fallos o ataques y la escalabilidad está limitada debido a la presión sobre el elemento central \cite{vybochPeertopeerProtocolsFile2017}.
 
 La alternativa a estos servicios centralizados es el uso de tecnologías \textit{peer-to-peer} (de igual a igual en español).
-Una aplicación peer-to-peer (p22) es un tipo de red donde no existen clientes ni servidores fijos,
+Una aplicación peer-to-peer (p2p) es un tipo de red donde no existen clientes ni servidores fijos,
 sino una serie de nodos que actúan como iguales y pueden funcionar tanto como clientes como servidores entre sí.
 
-Existen varias tecnologías p2p que permiten compartir archivos entre usuarios sin necesidad de un proveedor central como los previamente mencionados, el
+Existen varias tecnologías p2p que permiten compartir archivos entre usuarios sin necesidad de un proveedor central, el
 más famoso y conocido siendo BitTorrent\cite{BitTorrentProtocol}. Sin embargo, estas tecnologías no son adecuadas para el intercambio de archivos entre
 usuarios no conocidos, ya que requieren que los usuarios confíen en que los archivos que se comparten son los que se anuncian.
 
@@ -55,10 +55,10 @@ En este proyecto se usará IPFS como bloque central, sobre el que construirá el
 
 
 \section{Objetivos y alcance del proyecto}
-El objetivo principal de este proyecto es el desarrollo de un sistema de intercambio de ficheros basado en IPFS, mediante el desarrollo una aplicación de escritorio.
+El objetivo principal de este proyecto es el desarrollo de un sistema de intercambio de ficheros basado en IPFS, mediante una aplicación de escritorio.
 Este sistema debe permitir a los usuarios compartir archivos de forma segura y confiable, sin necesidad de ningún proveedor
 central de ningún tipo.
-\\Debe integrar capacidades de encriptación y control de acceso para garantizar la seguridad de los
+\\Debe integrar capacidades  de encriptación y control de acceso para garantizar la seguridad de los
 archivos compartidos. La integración de cuentas de usuario, con la posibilidad de hacer grupos, elegir contactos con los que
 compartir, se propone como algo imprescindible para lograr un sistema autocontenido y sin necesidad de herramientas externas
 para su uso. Por último se debe integrar un sistema de notificaciones para el que los usuarios puedan recibir avisos de nuevos
@@ -83,7 +83,6 @@ Por tanto pese a que el objetivo principal es el desarrollo de un sistema de int
 también se realizará una labor de investigación sobre  IPFS y su ecosistema, con el objetivo de comprender esta
 tecnología y su viabilidad como alternativa a muchas de las tecnologías actuales.
 
-Sobre el alcance del proyecto, en el capitulo \ref{chap:6trabajosfuturos}: '\nameref{chap:6trabajosfuturos}' se explora las posibles vías de expansión y mejoras para el proyecto en el futuro. También se expresan las esperanzas y expectativas para el crecimiento y posible impacto del mismo.
 
 \section{Estructura de la memoria}
 En este capítulo se ha introducido el proyecto, explicando las motivaciones y necesidades que han llevado a su realización.
@@ -98,6 +97,10 @@ Dentro de este capítulo se explica el funcionamiento de IPFS, tratando los sigu
 ecosistema y herramientas relacionadas. Con esta sección se busca dar una visión general de esta tecnología y su ecosistema para
 poder entender el sistema propuesto.
 
+En el capítulo \ref{chap:3estadodelarte}: '\nameref{chap:3estadodelarte}' se lleva a cabo un breve análisis
+de algunas otras implementaciones que usan IPFS o tecnologías similares, así como de otras alternativas a IPFS que cumplen
+parcial o completamente con los objetivos del proyecto.
+
 El capítulo \ref{chap:4desarrollo}: '\nameref{chap:4desarrollo}' se centra en el desarrollo del sistema propuesto. Este se ha estructurado en en:
 \begin{itemize}
       \item \textbf{Requisitos del sistema:} se explica el funcionamiento deseado del sistema.
@@ -106,10 +109,11 @@ El capítulo \ref{chap:4desarrollo}: '\nameref{chap:4desarrollo}' se centra en e
             incluye partes de código relevantes para entender la implementación realizada.
 \end{itemize}
 
-En el capítulo \ref{chap:4evaluacion}: '\nameref{chap:5evaluacion}' se realiza una
+En el capítulo \ref{chap:5evaluacion}: '\nameref{chap:5evaluacion}' se realiza una
 serie de pruebas del sistema desarrollado. Para ello se ha creado un escenario de uso real con distintos usuarios en varios lugares del mundo.
 
 El capítulo \ref{chap:6resultados}: '\nameref{chap:6resultados}' se analiza el resultado obtenido del desarrollo del proyecto. Se contrastará
 el resultado con los objetivos propuestos y con servicios de transferencia de archivos centralizados.
 
-En el capítulo \ref{chap:7trabajosfuturos}: '\nameref{chap:7trabajosfuturos}' se proponen posibles mejoras y ampliaciones del sistema propuesto.
+Sobre el alcance del proyecto, en el capitulo \ref{chap:7trabajosfuturos}: '\nameref{chap:7trabajosfuturos}' se explora las posibles vías de expansión y mejoras para el proyecto en el futuro.
+También se expresan las esperanzas y expectativas para el crecimiento y posible impacto del mismo.
