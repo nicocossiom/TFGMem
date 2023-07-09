@@ -1,3 +1,20 @@
 \chapter{Resultados y conclusiones}\label{chap:6resultados}
-\section{Resultados}
-hola
+
+Se han cumplido casi todos los objetivos del proyecto enumerados en \ref{sec:objetivos}: \nameref{sec:objetivos}. Se ha desarrollado un sistema de intercambio de ficheros basado en IPFS, mediante una aplicación de escritorio. Este sistema permite a los usuarios compartir archivos de forma segura y confiable, sin necesidad de ningún proveedor central de ningún tipo. Integra capacidades de encriptación y control de acceso para garantizar la seguridad de los archivos compartidos. La integración de cuentas de usuario, aunque sin la posibilidad de hacer grupos. También se puede elegir contactos con los que compartir. Por último se integra un sistema de notificaciones para el que
+los usuarios puedan recibir avisos de nuevos archivos compartidos, o de cambios en los archivos compartidos.
+
+El objetivo de investigar sobre IPFS y su funcionamiento para entender cómo funciona el protocolo y cómo se puede utilizar para el sistema propuesto también se ha cumplido. Se ha realizado un estudio con una profundidad adecuada al ámbito y alcance de este proyecto. Se han explicado conceptos de IPFS, su funcionamiento, arquitectura, algoritmo de intercambio de bloques, identificación basada en contenido, hasta su estructura de datos.
+Con estos conceptos como base se ha profundizado en el ecosistema en torno a IPFS, con objetivo de comprender la madurez y viabilidad de esta tecnología, así como de las herramientas basadas en esta que se pueden utilizar para el sistema propuesto. Sobre esto último:
+
+Tras el satisfactorio resultado obtenido se podría pensar que IPFS y su ecosistema están lo suficientemente avanzados como para ser utilizados en un sistema de producción. Sin embargo, tras el desarrollo de este proyecto se ha podido comprobar que IPFS y su ecosistema aún están en una fase temprana de desarrollo. Esto se debe a que se han encontrado varios problemas durante el desarrollo del proyecto, algunos de ellos se han podido solucionar, pero otros no. Estos problemas se han debido principalmente a la falta de documentación y a la inmadurez o falta de mantenimiento de algunas herramientas.
+
+Uno de los grandes obstáculos en el entorno de NodeJS para IPFS es la falta de soporte y mantenimiento de los paquetes de tipos de Typescript.
+Ciertos paquetes como \textit{orbitdb-identity-provider} tienen sus paquetes de tipos desactualizados, están erróneamente implementados u ocurre lo mismo con
+la documentación que proveen. Para solventar estos problemas se ha tenido que recurrir al uso de \textit{//@ts-ignore} en múltiples ocasiones, esta
+es una directiva que indica al compilador de Typescript que haga caso omiso a los errores de tipos que se producen en la línea siguiente. Este tipo de directivas está
+generalmente desaconsejado y hace que el uso de Typescript pierda sentido al desarrollar, ya que no realizan las comprobaciones de tipado.
+
+Para el paquete de \textit{orbitdb-identity-provider} se ha tenido que recurrir a hacer \textit{fork} del paquete para poder arreglar
+dos errores para el proveedor de identificación basado en DIDs, que es el usado por IPFShare.
+
+Esta falta o mala documentación también se traslada a las propias implementaciones de IPFS. Un ejemplo de esto es la discusión que se dio en el foro de IPFS sobre la posibilidad de compartir el MFS (Mutable File System) de un nodo a otro \cite{ItPossibleShare}. Varios usuarios expresaron su frustración y confusión sobre cómo usar el MFS, cómo acceder a los archivos desde otros nodos, cómo sincronizar los cambios y cómo resolver los conflictos. La documentación oficial de IPFS no ofrece mucha claridad sobre estos aspectos, y tampoco hay muchos ejemplos o tutoriales que expliquen cómo usar el MFS de forma efectiva. Esta clase de situaciones hace hace que sea difícil para los desarrolladores aprovechar el potencial de IPFS como un sistema de archivos distribuido y mutable. Este proyecto podría haberse implementado en Go, pero JavaScript y el entorno de NodeJS son tremendamente más populares entre desarrolladores.

@@ -205,8 +205,13 @@ Esta implementación se encuentra disponible en \href{https://github.com/nicocos
           \item \texttt{tar}: Proporciona funcionalidades para trabajar con archivos tar.
           \item \texttt{winston}: Un logger flexible para Node.js.
         \end{itemize}
-
 \end{itemize}
+Se ha decidido usar la implementación de IPFS escrita en Go, llamada Kubo debido a que los problemas existentes con la implementación de IPFS escrita en Javascript llamada js-ipfs.
+Al usar este proyecto NodeJS sería óptimo el uso de la implementación de IPFS escrita en Javascript al ser una solución más integrada. Sin embargo, a la hora de hacer
+pruebas js-ipfs sufre de muchos problemas de conectividad a través del mecanismo de pubsub necesario para el uso de OrbitDB.
+
+Kubo, por otro lado, es una implementación mucho más estable y madura, que no sufre de estos problemas, lo que hace que sea más adecuada para el uso en producción. La API
+RPC que integra y que es accesible desde NodeJS tiene una integración suficiente para el uso de IPFShare. El único problema que se ha encontrado es que el uso de Kubo desde NodeJS no permite usar una instancia personalizada de libp2p, esta instancia permite un control más granular sobre las comunicaciones y añade funcionalidades que no están disponibles en la API RPC.
 
 \subsection{Línea de comandos: CLI}\label{sssect:cli}
 Se ha desarrollado una interfaz de línea de comandos (CLI) para facilitar el uso del sistema. Esta CLI se ha desarrollado usando CommanderJS.
@@ -316,7 +321,7 @@ export interface AppContext {
   did: DID | undefined 
   // el nodo IPFS o controlador
   ipfs: Controller<ControllerType> | undefined 
-  // socket para comunicarse con el proceso daemon para el protocolo parada-espera
+  // socket para comunicarse con el proceso daemon para el protocolo de control de pausa y reanudación
   daemonSocket: Socket | undefined 
   // el Registry global de IPFShare
   registry: UserRegistry | undefined
@@ -373,21 +378,21 @@ export async function deInitializeContext() {
 }
 \end{minted}
 
-\subsection{Protocolo parada-espera entre demonio y CLI}
+\subsection{Protocolo de control de pausa y reanudación entre demonio y CLI}
 
-Como se puede observar dentro del Contexto se implementa parte del protocolo parada espera
+Como se puede observar dentro del Contexto se implementa parte del protocolo de control de pausa u reanudación
 que comunica con el proceso demonio que se ejecuta en segundo plano. Este protocolo se ha implementado
-para poder usar dos instancias de OrbitDB bajo el mismo directorio de datos.
+para poder usar dos instancias de OrbitDB bajo el mismo directorio de datos y así evitar problemas de concurrencia.
 
-Esto es necesario ya que el demonio siempre está en ejecución, con su instancia de OrbitDB mantieniendo las
+Esto es necesario ya que el demonio siempre está en ejecución, con su instancia de OrbitDB manteniendo las
 bases de datos actualizadas y sincronizadas con el resto de nodos. Cuando se ejecuta la CLI, esta instancia de OrbitDB se pausa para que la CLI pueda
 '\textit{robar}' la instancia al demonio (la vuelve a crear). Cuando se termina la ejecución de la CLI, se reanuda la instancia de OrbitDB del demonio para que este pueda seguir funcionando, retransmitiendo las operaciones que haya realizado la CLI.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{images/parada-espera-orbitdb.png}
-  \caption{Diagrama de secuencia del protocolo parada-espera implementado}
-  \label{fig:parada-espera}
+  \includegraphics[width=0.5\textwidth]{images/control_pausa_reanudacion.png}
+  \caption{Diagrama de secuencia del protocolo de control de pausa y reanudación implementado}
+  \label{fig:control_pausa_reanudacion}
 \end{figure}
 
 La comunicación se realiza mediante un socket TCP en el puerto 3000 (se podría configurar en cualquier otro puerto). El protocolo es muy sencillo: el cliente envía un mensaje al servidor, el servidor lo procesa y responde con otro mensaje de confirmación. El cliente espera a recibir este mensaje para continuar con la ejecución. Cuando termina manda otro mensaje al servidor para que este retome donde lo había dejado.
@@ -959,7 +964,7 @@ export async function addEncryptedObject (share: Share): Promise<CID> {
 }
 \end{minted}
 
-\subsection{Acceso de un archivo compartido}
+\subsection{Acceso a un archivo compartido}
 Cuando un usuario recibe una notificación de una compartición por parte de otro usuario con este, puede descargar el archivo compartido. Para ello se ha implementado el siguiente comando:
 
 \begin{minted}{typescript}
@@ -1137,7 +1142,7 @@ $ ipfshare registry list
 El usuario se ha registrado correctamente con el nombre de usuario elegido. Esta información se almacena en el archivo \textit{config.json} en el directorio de IPFShare. Cuando se inicia cualquier comando de la CLI, este lee el archivo \textit{config.json} y obtiene del Registry
 la entrada correspondiente al DID del usuario. Si el usuario no está registrado en el Registry, se le pedirá que se registre. Si está se verifica
 que esta entrada pertenece al usuario que está ejecutando el comando.
-\\ Aunque a efectos prácticos una entidad maligna podría intentar impersonar a otro usuario del sistema, esto no es posible por las razones explicadas en 
+\\ Aunque a efectos prácticos una entidad maligna podría intentar impersonar a otro usuario del sistema, esto no es posible por las razones explicadas en
 la subseccción \ref{ssect:autenticacion}: '\nameref{ssect:autenticacion}'.
 
 Una vez el usuario ha realizado estos pasos puede ejectuar cualquier comando de la CLI. Para más información sobre los comandos disponibles y su método de uso puede consultar el comando de ayuda:  \textit{ipfshare help}.
