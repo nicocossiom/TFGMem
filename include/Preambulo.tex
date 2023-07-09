@@ -41,13 +41,15 @@
 
 \usepackage[outputdir=build,cache=false]{minted}
 \usemintedstyle{vs}
-\setminted{fontsize=\scriptsize,baselinestretch=0.9, linenos}
 \setminted[typescript]{%
    breaklines,
    mathescape,
    linenos,
    numbersep=5pt,
    frame=single,
+   fontsize=\scriptsize,
+   baselinestretch=0.9,
+   linenos,
    xleftmargin=0pt
 }
 \setminted[bash]{%
@@ -56,21 +58,28 @@
    linenos,
    numbersep=5pt,
    frame=single,
+   fontsize=\scriptsize,
+   baselinestretch=0.9,
+   linenos,
    xleftmargin=0pt
 }
 \setminted[json]{%
    breaklines,
    mathescape,
+   linenos,
    numbersep=5pt,
    frame=single,
-   xleftmargin=0pt,
-   breakanywhere
+   fontsize=\scriptsize,
+   baselinestretch=0.9,
+   linenos,
+   xleftmargin=0pt
 }
 \setminted[text]{%
    breaklines,
    mathescape,
    numbersep=5pt,
    xleftmargin=0pt,
+   linenos=false,
    breakanywhere
 }
 \usepackage{titlesec}
