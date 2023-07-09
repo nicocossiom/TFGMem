@@ -15,7 +15,6 @@
 \usepackage[top=3cm, bottom=3cm, right=2.54cm, left=2.54cm]{geometry}
 \usepackage{afterpage}
 \usepackage{colortbl,longtable}
-\usepackage[pdfborder={0 0 0}]{hyperref}
 \usepackage{pdfpages}
 \usepackage {tabulary}
 \usepackage {array}
@@ -32,15 +31,23 @@
 \usepackage{rotating}  % For sidewaysfigure environment
 \usepackage{adjustbox} % For margins adjustment
 \usepackage{parskip} % para separar párrafos con espacio
+\usepackage{xcolor}
+\usepackage[colorlinks = true,
+   linkcolor = blue,
+   urlcolor  = blue,
+   citecolor = blue,
+   anchorcolor = blue,
+   pdfborder={0 0 0}]{hyperref}
+
 \usepackage[outputdir=build,cache=false]{minted}
 \usemintedstyle{vs}
+\setminted{fontsize=\scriptsize,baselinestretch=0.9, linenos}
 \setminted[typescript]{%
    breaklines,
    mathescape,
    linenos,
    numbersep=5pt,
    frame=single,
-   numbersep=5pt,
    xleftmargin=0pt
 }
 \setminted[bash]{%
@@ -49,7 +56,6 @@
    linenos,
    numbersep=5pt,
    frame=single,
-   numbersep=5pt,
    xleftmargin=0pt
 }
 \setminted[json]{%
@@ -57,11 +63,16 @@
    mathescape,
    numbersep=5pt,
    frame=single,
+   xleftmargin=0pt,
+   breakanywhere
+}
+\setminted[text]{%
+   breaklines,
+   mathescape,
    numbersep=5pt,
    xleftmargin=0pt,
    breakanywhere
 }
-
 \usepackage{titlesec}
 \titlespacing{\section}{0pt}{\parskip}{0pt}
 \titlespacing{\subsection}{0pt}{\parskip}{0pt}
