@@ -1,4 +1,85 @@
 \chapter{Trabajos futuros}\label{chap:7trabajosfuturos}
 
-% Resumen de resultados obtenidos en el TFG. Y conclusiones personales del estudiante sobre el trabajo realizado.
+En este capítulo se exploran las posibles vías de expansión y mejoras para el proyecto en el futuro.
 
+\section{Mejoras en la interfaz de usuario}
+La línea de comandos como interfaz de IPFShare es adecuada para un prototipo, aunque esto no se traslada a un
+producto final que busque ser usado por usuarios no técnicos. Por tanto, una mejora obvia sería la implementación de una interfaz gráfica de usuario.
+
+Esta interfaz gráfica se podría proveer mediante una aplicación web o de escritorio. En ambos casos se podría aprovechar la implementación actual de IPFShare, ya que
+esta se ha desarrollado en NodeJS, lo que permite que se pueda ejecutar en el navegador o en el escritorio mediante Electron\cite{BuildCrossplatformDesktop}.
+
+Esta mejora no es trivial, ya que el soporte de OrbitDB en el navegador requiere de servidores WebRTCStar \cite{OrbitDBrtc2023} para el correcto descubrimiento de nodos en la red. Esto es algo que se podría solucionar con la implementación de un servidor propio, esto implicaría añadir un componente centralizado que
+haría que el sistema no fuera completamente autocontenido y distribuido.
+
+\section{Uso de streams para el consumo de contenido en memoria}
+Dentro de la implementación actual se han integrado dos comandos que exploran este concepto. Estos son \texttt{ipfshare cat} y \texttt{ipfshare ls}.
+Estos comandos permiten consumir contenido de IPFS en memoria mediante streams, lo que habilita el uso de estos comandos en scripts y otras herramientas.
+
+El uso de concepto en otros comandos merece la pena ser explorado por las ventajas de consumo de disco y memoria que ofrece.
+
+\section{Mejoras en el sistema de notificaciones}
+En la implementación actual las notificaciones son creadas por los propios usuarios para sí mismos al llegar nuevas entradas
+del ShareLog dirigidas a estos. En ciertas ocasiones el evento sobre el que se realizan estas acciones no se dispara, por lo que
+las notificaciones pueden pasar desapercibidas. La solución a este problema consiste en el uso de bases de datos locales
+en las que se añaden las comparticiones que se tienen del ShareLog, y se comprueba si ya se han mostrado previamente.
+
+El algoritmo de comprobación de duplicados que implementa esta funcionalidad:
+\begin{minted}{typescript}
+
+async ensureLocalUpToDate() { 
+    await this.localSharedWithMeStore.load()
+    await this.localSharedWithOthersStore.load()
+    await this.store.load()
+    const localSharedWithMeEntries = this.localSharedWithMeStore.iterator().collect()
+    const localSharedWithOtherEntries = this.localSharedWithOthersStore.iterator().collect()
+    this.store.iterator().collect().forEach(
+        (entry) => { 
+            (async () => {
+                if (entry.payload.value.senderId === this._orbitdb.id &&
+                    localSharedWithOtherEntries.filter(async (localEntry) => {
+                        return localEntry.payload.value.shareCID.toString() === entry.payload.value.shareCID.toString()
+                    }).length == 0) {
+                    await this.localSharedWithOthersStore.add(entry.payload.value)
+                }
+                if (entry.payload.value.recipients.includes(this._orbitdb.id)
+                    &&
+                    entry.payload.value.senderId !== this._orbitdb.id
+                    &&
+                    localSharedWithMeEntries.filter(
+                        (localEntry) => localEntry.payload.value.shareCID.toString() === entry.payload.value.shareCID.toString()
+                    ).length === 0
+                ) {
+                    await this.localSharedWithMeStore.add(entry.payload.value)
+                    const value: ShareLogEntry = entry.payload.value
+                    logger.info('New share available, ${JSON.stringify(value)}')
+                    notify(value)
+                }
+            })()
+        })
+}
+\end{minted}
+
+Como se puede observar este método tiene una complejidad temporal de $O(n^2)$. Esto se debe a que en el peor de los casos, para cada entrada en \texttt
+{this.store} (n entradas), se ejecuta una operación de filtrado tanto en \texttt{localSharedWithOtherEntries} como en
+\\\texttt{localSharedWithMeEntries} (en el peor de los casos, cada operación de filtrado puede recorrer todos los elementos, que son de tamaño n). Por
+lo tanto, la complejidad total es proporcional al cuadrado del número de elementos, es decir, $O(n^2)$. No es una implementación eficiente, pero es la única que se ha encontrado que funciona correctamente, es por ello que se incluye en esta sección.
+
+
+\section{Mejoras en el sistema de encriptación}
+
+El algoritmo de encriptación que IPFShare utiliza es AES-256-CBC, que es seguro y comúnmente usado. Sin embargo, no es la mejor opción para su uso específico en IPFShare. AES-256-CBC es un algoritmo de cifrado en bloque que no puede paralelizarse, como resultado, el cifrado de archivos grandes puede resultar lento.
+
+
+\section{Integración de un sistema de ficheros en tiempo real sobre OrbitDB}
+Como ya se comentó en el la sección \ref{sec:sailplane}, Sailplane ha implementado un sistema de ficheros montado sobre OrbitDB. Esto es algo que se podría implementar en IPFShare ampliando enormemente las capacidades y casos de uso que IPFShare cubre actualmente.
+
+Se podría ampliar la implementación del store de Sailplane para que este soporte la encriptación de los archivos, y así poder ofrecer un sistema de ficheros encriptado capaz de sincronizarse en tiempo real y automáticamente entre los usuarios que tengan la instancia del store.
+
+\section{Integración de un sistema de ficheros en tiempo real sobre IPFS}
+
+En la anterior sección se ha discutido la posibilidad de usar OrbitDB como la base sobre la que montar un sistema de ficheros en tiempo real.
+Sin embargo, también se podría implementar un sistema de ficheros en tiempo real sobre IPFS. Actualmente existen esta funcionalidad en IPFS
+mediante el uso del MFS, pero no incorpora ningún tipo de encriptación ni sistema de control de acceso.
+
+Se podría manipular el MFS manualmente para recrear sus funcionalidades pero añadiendo una capa de encriptación por la que pasarían los archivos antes de ser añadidos al MFS. A la hora de la consumición de estos archivos se deberían desencriptar antes de ser consumidos.

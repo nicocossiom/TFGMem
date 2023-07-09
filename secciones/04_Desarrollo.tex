@@ -10,8 +10,8 @@ En esta sección se definen los requisitos funcionales y no funcionales que debe
   \item A la hora de compartir un archivo un usuario debe poder elegir con qué otros usuarios del sistema compartirlo.
   \item Un usuario debe tener posibilidad de hacer grupos de compartición.
   \item Cuando un usuario comparta recursos con otros usuarios, estos deben recibir una notificación.
-  \item Un usuario debe poder interactuar las comparticiones que ha realizado.
-  \item Un usuario debe poder interactuar las comparticiones que le han realizado.
+  \item Un usuario debe poder interactuar con las comparticiones que ha realizado para otros usuarios.
+  \item Un usuario debe poder interactuar con las comparticiones que otros usuarios han realizado para él.
 \end{itemize}
 \subsection{Requisitos no funcionales}
 \begin{itemize}[noitemsep,after=\vspace{-0.4\baselineskip}]
@@ -19,17 +19,17 @@ En esta sección se definen los requisitos funcionales y no funcionales que debe
   \item El sistema debe implementar servicios de seguridad en torno a la autenticación.
   \item El sistema debe proporcionar medidas de seguridad para los archivos compartidos.
   \item El sistema debe proporcionar un servicio o mecanismos de identificación de usuario portable.
-  \item Las transacciones y eventos del sistema deben ser relativamente instantáneos.
+  \item Las transacciones y eventos del sistema deben ser cuasi en tiempo real. Admitiendo las latencias inherentes a un sistema distribuido y a la calidad de la red.
 \end{itemize}
 Hay que destacar que este sistema no propone la sincronización de archivos que normalmente se asocia con los sistemas de
 almacenamiento en la nube. Incluir el desarrollo de esta funcionalidad en el sistema propuesto no es algo trivial.
-La sincronización de datos en tiempo real es un tópico muy complejo y se sale
+La sincronización de datos en tiempo real es una cuestión muy compleja y se sale
 del alcance de este proyecto. Sin embargo, en la sección de \nameref{chap:7trabajosfuturos} dentro de las posibles
 mejoras se propone una posible implementación de esta funcionalidad.
 \section{Arquitectura y diseño}
 
 Uno de los objetivos de este trabajo es comparar la viabilidad de IPFS como alternativa a los sistemas centralizados.
-En esta sección se presenta una arquitectura simplificada para un sistema de intercambio de archivos centralizado habitual.
+En esta sección se presenta una arquitectura simplificada para un sistema centralizado de intercambio de archivos habitual.
 Después se contrastará con la alternativa descentralizada propuesta.
 
 \subsection{Arquitectura de un sistema de intercambio de archivos centralizado habitual}
@@ -37,7 +37,8 @@ Después se contrastará con la alternativa descentralizada propuesta.
 Como se puede observar en la figura \ref{fig:centralizedarch}, la arquitectura de un sistema de intercambio de archivos
 requiere de varios puntos de acceso centralizados para funcionar\footnote{Este diseño se ha ideado tomando como referencia los siguientes recursos:
   \cite{chakrabortySystemDesignAnalysis2020} y
-  \cite{systemdesignSystemDesignInterview2023}.}.En un caso real esta arquitectura podría ser más compleja, implementando sistemas de caching, entre otras muchas mejoras posibles. Para este ejemplo se ha simplificado para centrarse en los puntos clave.
+  \cite{systemdesignSystemDesignInterview2023}.}.En un caso real esta arquitectura podría ser más compleja, implementando sistemas de caching o CDNs (Content Delivery Networks) por ejemplo,
+entre otras muchas mejoras posibles. Para este ejemplo se ha simplificado para centrarse en los puntos clave.
 
 Existe una clara separación conceptual de las distintos componentes, aunque pueden estar ubicados en
 el mismo servidor físico, en varios, o incluso, cada servicio en varios servidores físicos. Esto depende de la escala
@@ -45,11 +46,11 @@ del sistema y de las necesidades de rendimiento y disponibilidad.
 
 \begin{itemize}[noitemsep,after=\vspace{-0.4\baselineskip}]
   \item \textbf{Almacenamiento cloud:} el almacén donde se guardarán los chunks de ficheros proporcionados por el servicio
-        de procesamiento de ficheros, Amazon S3 es un ejemplo de un servicio de estas característica.
-        \item\textbf{Servicio de procesamiento de ficheros:} es el encargado atender y llevar a cabo las peticiones de usuario relacionadas con ficheros.
+        de procesamiento de ficheros, Amazon S3 es un ejemplo de un servicio con estas características.
+        \item\textbf{Servicio de procesamiento de ficheros:} es el encargado de atender y llevar a cabo las peticiones de usuario relacionadas con ficheros.
   \item \textbf{Servicio de autenticación:} gestiona la autenticación de los usuarios. Contiene los datos de los usuarios y sus credenciales.
   \item \textbf{Servicio de metadatos:} se encarga de enviar las notificaciones de los usuarios. Cuando un cliente
-        comparte un fichero con otro, el cliente envía también una serie de metadatos sobre esta acción que acaba de realizar.
+        comparte un fichero con otro, el cliente primero envía también una serie de metadatos sobre esta acción que acaba de realizar.
         Estos metadatos se pueden usar para gran variedad de propósitos. En este caso se usan para implementar un servicio de notificaciones basado en colas de mensajes.
 \end{itemize}
 \begin{sidewaysfigure}
@@ -59,7 +60,7 @@ del sistema y de las necesidades de rendimiento y disponibilidad.
   \label{fig:centralizedarch}
 \end{sidewaysfigure}
 
-Cuando un cliente quiere compartir un fichero, este divide el archivo en trozos más pequeños llamados chunks\footnote{En un servicio de compartición de archivos, los archivos se subdividen en fragmentos o chunks para mejorar la eficiencia de la transferencia de datos, permitiendo la transmisión paralela y la reanudación de las transferencias interrumpidas, así como facilitar la distribución del almacenamiento y reducir la redundancia de datos.}.
+Cuando un cliente quiere compartir un fichero, este divide el archivo en trozos más pequeños llamados chunks o bloques\footnote{En un servicio de compartición de archivos, los archivos se subdividen en fragmentos o chunks para mejorar la eficiencia de la transferencia de datos, permitiendo la transmisión paralela y la reanudación de las transferencias interrumpidas, así como facilitar la distribución del almacenamiento y reducir la redundancia de datos.}.
 Envía a través de una conexión segura (socket tpc sobre TLS por ejemplo) estos chunks que componen el archivo al servicio de procesamiento de ficheros.
 Este servicio se encarga de guardar los chunks en el almacenamiento cloud y de mandar los metadatos a la cola de mensajes.
 El servicio de metadatos procesa de forma asíncrona estos metadatos, extrayendo la información pertinente que identifique
@@ -74,8 +75,8 @@ sistemas centralizados de terceros.
 \subsection{Arquitectura de IPFShare: un sistema de intercambio de archivos descentralizado}
 En comparación con la arquitectura anterior (figura \ref{fig:centralizedarch}), la arquitectura de IPFShare es
 completamente descentralizada. No existe ningún servicio centralizado, cualquier servicio proporcionado por una entidad externa proviene de
-de otros nodos IPFS, siendo el propio nodo cliente otro proveedor más de servicios. Esto hace el sistema completamente autocontenido e independiente de servicios fuera
-de la red IPFS.
+de otros nodos IPFS, siendo el propio nodo cliente otro proveedor más de servicios. Esto hace el sistema completamente autocontenido e independiente de servicios externos
+a la red IPFS.
 
 \begin{figure}[H]
   \centering
@@ -86,7 +87,7 @@ de la red IPFS.
 
 En el sistema propuesto, cada usuario opera un nodo IPFS, que sirve como su punto de conexión a la red IPFS. Las interacciones entre el cliente y
 este nodo IPFS se facilitan a través de una interfaz de programación de aplicaciones (API), que expone un conjunto de operaciones que puede realizar
-el nodo \cite{KuboRPCAPI}. Esta comunicación se lleva a cabo mediante RPC, un protocolo que permite al cliente ejecutar procedimientos en el nodo IPFS como si estuvieran en el mismo sistema, lo que facilita la solicitud eficiente de servicios y operaciones.
+el nodo \cite{KuboRPCAPI}. Esta comunicación se lleva a cabo mediante RPC (Remote Procedure Calls), un protocolo que permite al cliente ejecutar procedimientos en el nodo IPFS como si estuvieran en el mismo sistema, lo que facilita la solicitud eficiente de servicios y operaciones.
 
 El programa interactúa con la red IPFS mediante esta API a través del nodo IPFS local. IPFS sustituye al servicio de almacenamiento cloud
 al ser un gran swarm de nodos que almacenan y comparten datos entre sí. IPFS en sí mismo no impone un límite teórico sobre la cantidad de datos que
@@ -118,26 +119,26 @@ Estas políticas son:
 \begin{itemize}[noitemsep,after=\vspace{-0.4\baselineskip}]
   \item Cualquier usuario puede crear una entrada en el registro.
   \item Un usuario solo puede tener una entrada en el registro.
-  \item Solo el usuario que creó la entrada una puede modificarla.
-  \item Solo el usuario que creó la entrada una puede eliminarla.
+  \item Solo el usuario que creó la entrada puede modificarla.
+  \item Solo el usuario que creó la entrada puede eliminarla.
 \end{itemize}
 
 Cuando se crea una instancia de OrbitDB, el creador especifica un controlador de acceso (AC) para la base de datos.
 Este controlador de acceso se almacena en el manifiesto de la base de datos (los metadatos de la base de datos)
-y la dirección de este manifiesto se utiliza luego para cargar la base de datos. Entonces surge la pregunta, ¿no podría alguien simplemente intercambiar el controlador de acceso en su instancia local?
+y la dirección de este manifiesto se utiliza luego para cargar la base de datos. Entonces surge la pregunta:
+¿no podría alguien intercambiar el controlador de acceso en su instancia local, pudiendo así sortear o alterar las políticas de acceso del Registry?
 \\
-La respuesta a esto es no, no pueden por las siguiente razones:
+La respuesta a esto es no, por las siguiente razones:
 \begin{enumerate}[noitemsep,after=\vspace{-0.4\baselineskip}]
-  \item El controlador de acceso y sus parámetros se almacenan en el manifiesto de la base de datos, y el hash de este manifiesto compone la dirección de la base de datos. Si alguien cambia el controlador de acceso, cambiarían el manifiesto, y por lo tanto la dirección de la base de datos. Esencialmente, estarían creando una base de datos completamente nueva, no alterando la original.
-  \item Incluso si alguien crea una nueva base de datos con un controlador de acceso diferente, no pueden escribir en la base de datos original al no concordar las direcciones.
+  \item El controlador de acceso y sus parámetros se almacenan en el manifiesto de la base de datos, y el hash de este manifiesto compone la dirección de la base de datos. Si alguien cambia el controlador de acceso, cambiarían el manifiesto, y por lo tanto la dirección de la base de datos. Esencialmente, estarían creando una base de datos completamente nueva, sin alterar la original.
   \item Todas las actualizaciones a la base de datos (adiciones, modificaciones, etc.) son firmadas por las identidad del escritor. Si un usuario malintencionado intenta alterar los datos, las firmas no coincidirán, haciendo que los cambios sean invalidados por el resto de nodos que poseen la base datos.
-  \item Al leer de la base de datos, el controlador de acceso valida si los datos (entradas) pueden ser añadidos a la base de datos local o no. Incluso si alguien cambiara el controlador de acceso localmente, no podrían alimentar datos alterados a otros porque los controladores de acceso de los demás validarían y rechazarían los cambios.
+  \item Al recibir nuevas entradas de otras instancias de la base de datos por el protocolo de replicación, el controlador de acceso valida si los estas pueden ser añadidos a la base de datos local o no. Incluso si alguien cambiara el controlador de acceso localmente, no podrían alimentar datos alterados a otros nodos porque los controladores de acceso de los demás validarían y rechazarían los cambios.
 \end{enumerate}
 
 \subsection{Colas de mensajes asíncronas distribuidas}
 El servicio de metadatos mediante colas de mensajes se sustituye por una base de datos distribuida de tipo
-log, también provista por OrbitDB. Este componente se ha denominado en el sistema \textit{ShareLog}.
-Un ShareLog es una base de datos distribuida que mantiene un registro de las acciones de compartición de los usuarios. Al realizar una compartición, el cliente añade una entrada al ShareLog, que contiene información sobre esta, que es distribuida entre todos los nodos del sistema. De esta forma, se consigue un registro de las comparticiones que se ha realizado en el sistema, que se puede consultar en cualquier momento. En este sistema cuando se habla
+log, también proporcionada por OrbitDB. Este componente se ha denominado en el sistema \textit{ShareLog}.
+Un ShareLog es una base de datos distribuida que mantiene un registro de las acciones de compartición de los usuarios. Al realizar una compartición, el cliente añade una entrada al ShareLog que contiene información sobre esta, que es distribuida entre todos los nodos del sistema. De esta forma, se consigue un registro de las comparticiones que se ha realizado en el sistema, que se puede consultar en cualquier momento. En este sistema cuando se habla
 de notificaciones se refiere a entradas que llegan del ShareLog a los nodos clientes, que las procesan y muestran notificaciones al usuario, si es que están dirigidos a este.
 
 \subsection{Protocolo de compartición}\label{ssect:protocolocomparticion}
@@ -150,7 +151,7 @@ El diagrama siguiente muestra como funciona la compartición en IPFShare:
   \label{fig:ipfshareprotocol}
 \end{figure}
 
-En palabras este protocolo funciona de la siguiente forma:
+Este protocolo se describe a continuación:
 \begin{itemize}[noitemsep,after=\vspace{-0.4\baselineskip}]
   \item Un archivo designado como ``X'' es comprimido en formato 'targz' por el usuario A.
   \item Posteriormente, el archivo comprimido es encriptado por el usuario A mediante el algoritmo aes-256-cbc.
@@ -207,15 +208,14 @@ Esta implementación se encuentra disponible en \href{https://github.com/nicocos
         \end{itemize}
 \end{itemize}
 Se ha decidido usar la implementación de IPFS escrita en Go, llamada Kubo debido a que los problemas existentes con la implementación de IPFS escrita en Javascript llamada js-ipfs.
-Al usar este proyecto NodeJS sería óptimo el uso de la implementación de IPFS escrita en Javascript al ser una solución más integrada. Sin embargo, a la hora de hacer
+Al usar este proyecto NodeJS, resultaría óptimo el uso de la implementación de IPFS escrita en Javascript, al ser una solución más integrada. Sin embargo, a la hora de hacer
 pruebas js-ipfs sufre de muchos problemas de conectividad a través del mecanismo de pubsub necesario para el uso de OrbitDB.
 
 Kubo, por otro lado, es una implementación mucho más estable y madura, que no sufre de estos problemas, lo que hace que sea más adecuada para el uso en producción. La API
-RPC que integra y que es accesible desde NodeJS tiene una integración suficiente para el uso de IPFShare. El único problema que se ha encontrado es que el uso de Kubo desde NodeJS no permite usar una instancia personalizada de libp2p, esta instancia permite un control más granular sobre las comunicaciones y añade funcionalidades que no están disponibles en la API RPC.
+RPC que integra y que es accesible desde NodeJS tiene una integración suficiente para el caso de uso de IPFShare. El único problema que se ha encontrado es que el uso de Kubo desde NodeJS no permite usar una instancia personalizada de libp2p, esta instancia permite un control más granular sobre las comunicaciones y añade funcionalidades que no están disponibles en la API RPC.
 
 \subsection{Línea de comandos: CLI}\label{sssect:cli}
-Se ha desarrollado una interfaz de línea de comandos (CLI) para facilitar el uso del sistema. Esta CLI se ha desarrollado usando CommanderJS.
-Para crear una CLI en CommanderJS se sigue el siguiente patrón:
+Se ha desarrollado una interfaz de línea de comandos (CLI) para facilitar el uso del sistema. Esta CLI se ha desarrollado usando el paquete CommanderJS, siguiendo el siguiente patrón:
 \begin{itemize}[noitemsep,after=\vspace{-0.4\baselineskip}]
   \item Se crea una instancia de Command.
   \item Se añaden comandos, opciones y argumentos a esta instancia usando una serie de métodos proporcionados.
@@ -298,7 +298,7 @@ info                          Provides information about the running ipfshare in
 \end{minted}
 
 
-Cuando se ejecuta un comando la aplicación realiza todas las operaciones correspondientes dentro de lo que se ha denominado como \textit{Contexto}. El Contexto es un objeto que contiene todas las instancias de las clases que se necesitan para el correcto funcionamiento de la aplicación. Dado que existen interdependencias entre los componentes del Contexto este se tiene que iniciar en una secuencia específica.
+Cuando se ejecuta un comando la aplicación realiza todas las operaciones correspondientes dentro de lo que se ha denominado como \textit{Contexto}. El Contexto es un objeto que contiene todas las instancias, apropiadamente inicializadas, de las clases que se necesitan para el correcto funcionamiento de la aplicación. Dado que existen interdependencias entre los componentes del Contexto este se tiene que iniciar en una secuencia específica.
 
 \begin{minted}{typescript}
 import { AppConfig } from "@app/common/appConfig"
@@ -336,9 +336,9 @@ export async function withContext(fn: () => Promise<void>) {
   await deInitializeContext()
 }
 \end{minted}
-La función que se pasa como argumento a withContext se ejecuta dentro del contexto asegurando que este se ha inicializado correctamente, y que se desinicializa en el órden adecuado después de terminar la ejecución de la función.
+La función que se pasa como argumento a withContext se ejecuta dentro del Contexto asegurando que este se ha inicializado correctamente, y que se desinicializa en el órden adecuado después de terminar la ejecución de la función.
 
-Estas son las secuencias de inicialización y desinicialización del contexto:
+Estas son las secuencias de inicialización y desinicialización del Contexto:
 
 \begin{minted}{typescript}
 export async function initializeContext() {
@@ -375,88 +375,6 @@ export async function deInitializeContext() {
   await ctx.orbitdb?.disconnect()
   ctx.daemonSocket?.write("resumeOrbitDB")
   process.exit(0)
-}
-\end{minted}
-
-\subsection{Protocolo de control de pausa y reanudación entre demonio y CLI}
-
-Como se puede observar dentro del Contexto se implementa parte del protocolo de control de pausa u reanudación
-que comunica con el proceso demonio que se ejecuta en segundo plano. Este protocolo se ha implementado
-para poder usar dos instancias de OrbitDB bajo el mismo directorio de datos y así evitar problemas de concurrencia.
-
-Esto es necesario ya que el demonio siempre está en ejecución, con su instancia de OrbitDB manteniendo las
-bases de datos actualizadas y sincronizadas con el resto de nodos. Cuando se ejecuta la CLI, esta instancia de OrbitDB se pausa para que la CLI pueda
-'\textit{robar}' la instancia al demonio (la vuelve a crear). Cuando se termina la ejecución de la CLI, se reanuda la instancia de OrbitDB del demonio para que este pueda seguir funcionando, retransmitiendo las operaciones que haya realizado la CLI.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{images/control_pausa_reanudacion.png}
-  \caption{Diagrama de secuencia del protocolo de control de pausa y reanudación implementado}
-  \label{fig:control_pausa_reanudacion}
-\end{figure}
-
-La comunicación se realiza mediante un socket TCP en el puerto 3000 (se podría configurar en cualquier otro puerto). El protocolo es muy sencillo: el cliente envía un mensaje al servidor, el servidor lo procesa y responde con otro mensaje de confirmación. El cliente espera a recibir este mensaje para continuar con la ejecución. Cuando termina manda otro mensaje al servidor para que este retome donde lo había dejado.
-
-\begin{minted}{typescript}
-// esta es la función que se encarga de enviar comunicarse con proceso demonio
-function sendMessageToOrbitDBService(message: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-      if (ctx.daemonSocket === undefined ) throw new Error("Daemon socket is undefined")
-      ctx.daemonSocket.once("data", data => {
-          // Handle any response or acknowledgment from the daemon process
-          const response = data.toString()
-          logger.debug(`Received response for message ${message}:`, response)
-          resolve(response)
-      })
-
-      ctx.daemonSocket.write(message, error => {
-          if (error) {
-              console.error("Error sending message:", error.message)
-              reject(error)
-          }
-          logger.debug(`Sent message ${message}`)
-      })
-  })
-}
-// este servicio es creado por el proceso demonio y se encarga de procesar los mensajes que recibe de la CLI
-private static createOrbitDBService() {
-const server = net.createServer(socket => {
-  socket.on("data", data => {
-    const message = data.toString()
-
-    if (message === "pauseOrbitDB") {
-        (async () => {
-            logger.info("Pausing OrbitDB")
-            if (!ctx.orbitdb) throw new Error("OrbitDB is not initialized")
-            await ctx.orbitdb.disconnect()
-            if (!process.env.IPFSHARE_HOME) throw new Error("IPFShare home is not set")
-            ctx.identity?.provider.keystore.close()
-            socket.write("OrbitDB paused")
-        })()
-    }
-    else if (message === "resumeOrbitDB") {
-        (async () => {
-            logger.info("Resuming OrbitDB")
-            if (!ctx.ipfs) throw new Error("IPFS is not initialized")
-            ctx.orbitdb = await getOrbitDB(true)
-            await ctx.identity?.provider.keystore.open()
-            ctx.registry = new UserRegistry(ctx.ipfs.api, ctx.orbitdb)
-            await ctx.registry.open()
-            logger.info("Replicating registry")
-            await ctx.registry.replicate()
-            ctx.shareLog = new IPFShareLog(ctx.ipfs.api, ctx.orbitdb, "ipfs-sharelog")
-            await ctx.shareLog.open()
-            await ctx.shareLog.onNewShare()
-        })()
-    }
-  })
-  socket.on("error", err => {
-      logger.error("Error in OrbitDB service", err)
-      throw err
-  })
-})
-
-return server
 }
 \end{minted}
 
@@ -533,7 +451,91 @@ La invocaicón de este proceso se realiza mediante el comando \texttt{ipfshare d
   \item \texttt{stop}: Detiene el proceso demonio.
 \end{itemize}
 
+El sistema ideado requiere tener en ejecución el demonio para el correcto funcionamiento del mismo. Esto se debe a que el demonio
+debe replicar y recibir entradas de las basses de datos de OrbitDB, además de mantener accesibles las comparticiones hechas
+por el usuario para otros usuarios del sistema.
 
+\subsection{Protocolo de control de pausa y reanudación entre demonio y CLI}
+
+Como se puede observar dentro del Contexto se implementa parte del protocolo de control de pausa u reanudación
+que comunica con el proceso demonio que se ejecuta en segundo plano. Este protocolo se ha implementado
+para poder usar dos instancias de OrbitDB bajo el mismo directorio de datos y así evitar problemas de concurrencia.
+
+Esto es necesario ya que el demonio siempre está en ejecución, con su instancia de OrbitDB manteniendo las
+bases de datos actualizadas y sincronizadas con el resto de nodos. Cuando se ejecuta la CLI, esta instancia de OrbitDB se pausa para que la CLI pueda
+'\textit{robar}' la instancia al demonio (la vuelve a crear). Cuando se termina la ejecución de la CLI, se reanuda la instancia de OrbitDB del demonio para que este pueda seguir funcionando, retransmitiendo las operaciones que haya realizado la CLI.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/control_pausa_reanudacion.png}
+  \caption{Diagrama de secuencia del protocolo de control de pausa y reanudación implementado}
+  \label{fig:control_pausa_reanudacion}
+\end{figure}
+
+La comunicación se realiza mediante un socket TCP en el puerto 3000 (se podría configurar en cualquier otro puerto). El protocolo es muy sencillo: el cliente envía un mensaje de vuelta al servidor, el servidor lo procesa y responde con otro mensaje de confirmación. El cliente espera a recibir este mensaje para continuar con la ejecución. Cuando termina manda otro mensaje al servidor para que este retome la instancia de OrbitDB donde lo había dejado\footnote{Realmente se reinicializa la instancia de OrbitDB, pero a efectos prácticos se podría considerar que la reanuda}.
+
+\begin{minted}{typescript}
+// esta es la función que se encarga de enviar comunicarse con proceso demonio
+function sendMessageToOrbitDBService(message: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+      if (ctx.daemonSocket === undefined ) throw new Error("Daemon socket is undefined")
+      ctx.daemonSocket.once("data", data => {
+          // Handle any response or acknowledgment from the daemon process
+          const response = data.toString()
+          logger.debug(`Received response for message ${message}:`, response)
+          resolve(response)
+      })
+
+      ctx.daemonSocket.write(message, error => {
+          if (error) {
+              console.error("Error sending message:", error.message)
+              reject(error)
+          }
+          logger.debug(`Sent message ${message}`)
+      })
+  })
+}
+// este servicio es creado por el proceso demonio y se encarga de procesar los mensajes que recibe de la CLI
+private static createOrbitDBService() {
+const server = net.createServer(socket => {
+  socket.on("data", data => {
+    const message = data.toString()
+
+    if (message === "pauseOrbitDB") {
+        (async () => {
+            logger.info("Pausing OrbitDB")
+            if (!ctx.orbitdb) throw new Error("OrbitDB is not initialized")
+            await ctx.orbitdb.disconnect()
+            if (!process.env.IPFSHARE_HOME) throw new Error("IPFShare home is not set")
+            ctx.identity?.provider.keystore.close()
+            socket.write("OrbitDB paused")
+        })()
+    }
+    else if (message === "resumeOrbitDB") {
+        (async () => {
+            logger.info("Resuming OrbitDB")
+            if (!ctx.ipfs) throw new Error("IPFS is not initialized")
+            ctx.orbitdb = await getOrbitDB(true)
+            await ctx.identity?.provider.keystore.open()
+            ctx.registry = new UserRegistry(ctx.ipfs.api, ctx.orbitdb)
+            await ctx.registry.open()
+            logger.info("Replicating registry")
+            await ctx.registry.replicate()
+            ctx.shareLog = new IPFShareLog(ctx.ipfs.api, ctx.orbitdb, "ipfs-sharelog")
+            await ctx.shareLog.open()
+            await ctx.shareLog.onNewShare()
+        })()
+    }
+  })
+  socket.on("error", err => {
+      logger.error("Error in OrbitDB service", err)
+      throw err
+  })
+})
+
+return server
+}
+\end{minted}
 
 \subsection{Registry}
 
@@ -739,7 +741,7 @@ async searchUsers(mapper: (entry: RegistryEntry) => boolean): Promise<RegistryEn
 \end{minted}
 
 \subsection{Compartición de un archivo}
-En la CLI se ha implementado un comando para compartir archivos y carpetas. Este comando se ha implementado de la siguiente forma:
+En la CLI se ha implementado un comando para compartir archivos y carpetas:
 \begin{minted}{typescript}
 program.command("share")
   .argument("[path...]", "Path to file or folder to upload")
@@ -782,7 +784,7 @@ program.command("share")
 })
 \end{minted}
 
-'\textit{'interactiveRegistryPrompt}' es un método que muestra un diálogo interactivo para seleccionar los usuarios con los que se quiere compartir el archivo. Este diálogo se ha implementado con la biblioteca \texttt{prompts}.
+\textit{'interactiveRegistryPrompt}' es un método que muestra un diálogo interactivo para seleccionar los usuarios con los que se quiere compartir el archivo. Este diálogo se ha implementado con la biblioteca \texttt{prompts}.
 
 \begin{minted}{typescript}
 const interactiveRegistryPrompt:  (promptMessage: string)  => Promise<string[]> = async (promptMessage) => {
