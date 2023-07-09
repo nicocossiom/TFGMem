@@ -44,7 +44,7 @@ El Sistema de Archivos Interplanetario es un sistema de archivos distribuido que
 al mismo sistema de archivos. En cierto modo, IPFS es similar a la Web, aunque podría verse como una sola red
 BitTorrent, intercambiando objetos dentro de un repositorio Git.
 \\En otras palabras, IPFS permite guardar y acceder a bloques de
-datos identificados por su contenido, no por su ubicación, y que se pueden transferir rápidamente entre los nodos. Además, IPFS
+datos identificados por su contenido, no por su ubicación, que se pueden transferir rápidamente entre los nodos. Además, IPFS
 usa estos bloques para crear enlaces que también se basan en el contenido, no en una dirección que apunta a una ubicación donde se puede encontrar el contenido.
 Esto forma un grafo dirigido acíclico generalizado de Merkle (Merkle DAG), una estructura de datos sobre la que se puede
 construir sistemas de archivos versionados, cadenas de bloques e incluso una Web Permanente. IPFS combina una tabla hash
@@ -62,7 +62,7 @@ central de ningún tipo.
 \\Debe integrar capacidades  de encriptación y control de acceso para garantizar la seguridad de los
 archivos compartidos. La integración de cuentas de usuario, con la posibilidad de hacer grupos, elegir contactos con los que
 compartir, se propone como algo imprescindible para lograr un sistema autocontenido y sin necesidad de herramientas externas
-para su uso. Por último se debe integrar un sistema de notificaciones para el que los usuarios puedan recibir avisos de nuevos
+para su uso. Por último se debe integrar un sistema de notificaciones para que los usuarios puedan recibir avisos de nuevos
 archivos compartidos, o de cambios en los archivos compartidos.
 
 Para lograr esto se han cumplido los siguientes objetivos:
@@ -81,20 +81,18 @@ Para lograr esto se han cumplido los siguientes objetivos:
 \end{itemize}
 
 Por tanto pese a que el objetivo principal es el desarrollo de un sistema de intercambio de ficheros basado en IPFS,
-también se realizará una labor de divulgativa sobre  IPFS y su ecosistema, con el objetivo de comprender esta
+también se realizará una labor de divulgativa y de investigación sobre IPFS y su ecosistema, con el objetivo de comprender esta
 tecnología y su viabilidad como alternativa a muchas de las tecnologías actuales.
 
 
 \section{Estructura de la memoria}
 En este capítulo se ha introducido el proyecto, explicando las motivaciones y necesidades que han llevado a su realización.
 
-En el capítulo \ref{chap:2contexto}: '\nameref{chap:2contexto}' se pone en situación el estado actual de tecnologías relacionadas con el proyecto, tanto alternativas
-como otras implementaciones que usen IPFS u otras tecnologías similares que cumplan parcial o completamente con los objetivos del proyecto.
-Al comienzo de este capítulo también se explica brevemente la historia de internet y su evolución hasta el presente.
+En el capítulo \ref{chap:2contexto}: '\nameref{chap:2contexto}' se explica brevemente la historia de internet y su evolución hasta el presente.
 La razón de ser de esta sección se debe a la necesidad de poner en situación el porqué detrás de la dominancia de ciertos
 protocolos que han guiado el modelo de internet actual, y que han llevado a la necesidad de alternativas como IPFS.
 
-Dentro de este capítulo se explica el funcionamiento de IPFS, tratando los siguientes temas: arquitectura interna, funcionamiento,
+Dentro de este capítulo se también se explica el funcionamiento de IPFS, tratando los siguientes temas: arquitectura interna, funcionamiento,
 ecosistema y herramientas relacionadas. Con esta sección se busca dar una visión general de esta tecnología y su ecosistema para
 poder entender el sistema propuesto.
 
@@ -113,8 +111,8 @@ El capítulo \ref{chap:4desarrollo}: '\nameref{chap:4desarrollo}' se centra en e
 En el capítulo \ref{chap:5evaluacion}: '\nameref{chap:5evaluacion}' se realiza una
 serie de pruebas del sistema desarrollado. Para ello se ha creado un escenario de uso real con distintos usuarios en varios lugares del mundo.
 
-El capítulo \ref{chap:6resultados}: '\nameref{chap:6resultados}' se analiza el resultado obtenido del desarrollo del proyecto. Se contrastará
-el resultado con los objetivos propuestos y con servicios de transferencia de archivos centralizados.
+El capítulo \ref{chap:6resultados}: '\nameref{chap:6resultados}' se analiza el resultado obtenido del desarrollo del proyecto. Además, se 
+compartirán las conclusiones obtenidas respecto a la visibilidad de IPFS como alternativa a tecnologías actuales.
 
 Sobre el alcance del proyecto, en el capitulo \ref{chap:7trabajosfuturos}: '\nameref{chap:7trabajosfuturos}' se explora las posibles vías de expansión y mejoras para el proyecto en el futuro.
 También se expresan las esperanzas y expectativas para el crecimiento y posible impacto del mismo.

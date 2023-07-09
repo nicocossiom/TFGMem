@@ -337,6 +337,19 @@
   keywords = {ipfs}
 }
 
+@article{Kademlia2023,
+  title = {Kademlia},
+  year = {2023},
+  month = jul,
+  journal = {Wikipedia},
+  url = {https://en.wikipedia.org/w/index.php?title=Kademlia&oldid=1163183441},
+  urldate = {2023-07-09},
+  abstract = {Kademlia is a distributed hash table for decentralized peer-to-peer computer networks designed by Petar Maymounkov and David Mazi\`eres in 2002. It specifies the structure of the network and the exchange of information through node lookups. Kademlia nodes communicate among themselves using UDP. A virtual or overlay network is formed by the participant nodes. Each node is identified by a number or node ID. The node ID serves not only as identification, but the Kademlia algorithm uses the node ID to locate values (usually file hashes or keywords). In order to look up the value associated with a given key, the algorithm explores the network in several steps. Each step will find nodes that are closer to the key until the contacted node returns the value or no more closer nodes are found. This is very efficient: like many other DHTs, Kademlia contacts only                         O         (         log         ⁡         n         )                 \{\textbackslash displaystyle O(\textbackslash log n)\}    nodes during the search out of a total of                         n                 \{\textbackslash displaystyle n\}    nodes in the system. Further advantages are found particularly in the decentralized structure, which increases the resistance against a denial-of-service attack. Even if a whole set of nodes is flooded, this will have limited effect on network availability, since the network will recover itself by knitting the network around these "holes". I2P's implementation of Kademlia is modified to mitigate Kademlia's vulnerabilities, such as Sybil attacks.},
+  copyright = {Creative Commons Attribution-ShareAlike License},
+  langid = {english},
+  annotation = {Page Version ID: 1163183441}
+}
+
 @misc{KuboRPCAPI,
   title = {Kubo {{RPC API}} | {{IPFS Docs}}},
   url = {https://docs.ipfs.tech/reference/kubo/rpc/#getting-started},
